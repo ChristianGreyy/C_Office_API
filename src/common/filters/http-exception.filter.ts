@@ -1,40 +1,36 @@
 import {
-  ExceptionFilter,
-  Catch,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { BaseExceptionFilter, HttpAdapterHost } from '@nestjs/core';
+import { HttpAdapterHost } from '@nestjs/core';
 
 @Catch()
-export class HttpExceptionsFilter extends BaseExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
-    super.catch(exception, host);
+export class HttpExceptionsFilter implements ExceptionFilter {
+  constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
+
+  catch(exception: unknown, host: ArgumentsHost): void {
+    const { httpAdapter } = this.httpAdapterHost;
+
+    const ctx = host.switchToHttp();
+
+    const httpStatus =
+      exception instanceof HttpException
+        ? exception.getStatus()
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+
+    const message =
+      exception instanceof HttpException
+        ? exception.message
+        : 'INTERNAL_SERVER_ERROR';
+
+    const responseBody = {
+      statusCode: httpStatus,
+      message,
+    };
+
+    httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
   }
 }
-// @Catch()
-// export class HttpExceptionsFilter implements ExceptionFilter {
-//   constructor(private readonly httpAdapterHost: HttpAdapterHost) {}
-
-//   catch(exception: unknown, host: ArgumentsHost): void {
-//     // In certain situations `httpAdapter` might not be available in the
-//     // constructor method, thus we should resolve it here.
-//     const { httpAdapter } = this.httpAdapterHost;
-
-//     const ctx = host.switchToHttp();
-
-//     const httpStatus =
-//       exception instanceof HttpException
-//         ? exception.getStatus()
-//         : HttpStatus.INTERNAL_SERVER_ERROR;
-
-//     const responseBody = {
-//       statusCode: httpStatus,
-//       timestamp: new Date().toISOString(),
-//       path: httpAdapter.getRequestUrl(ctx.getRequest()),
-//     };
-
-//     httpAdapter.reply(ctx.getResponse(), responseBody, httpStatus);
-//   }
-// }
