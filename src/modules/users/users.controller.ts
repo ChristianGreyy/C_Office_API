@@ -11,6 +11,7 @@ import { LocalesService } from '../locales/locales.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
 import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
+import { User } from '@prisma/client';
 
 @ApiHeader({
   name: 'X-MyHeader',
@@ -26,14 +27,14 @@ export class UsersController {
   ) {}
 
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<any> {
-    return;
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.usersService.createUser(createUserDto);
   }
 
   @Get()
-  async getUsers(@Query() getUsersDto: GetUsersDto): Promise<any> {
+  async getUsers(@Query() getUsersDto: GetUsersDto): Promise<User> {
     throw new NotFoundException(
-      this.localesService.translate('users.TEST', 'vn'),
+      this.localesService.translate('users.PASSWORD_NOT_MATCH', 'vn'),
     );
     return this.usersService.getUsers();
   }

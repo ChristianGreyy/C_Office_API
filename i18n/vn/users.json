@@ -1,3 +1,4 @@
 {
-    "TEST": "Đơn giản"
+  "INVALID_PASSWORD": "mật khẩu phải có ít nhất 8 ký tự, 1 số và 1 chữ in hoa",
+  "PASSWORD_NOT_MATCH": "xác nhận mật khẩu không khớp với mật khẩu"
 }
