@@ -1,8 +1,18 @@
-import { PipeTransform, Injectable, ArgumentMetadata } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { I18nValidationPipe } from 'nestjs-i18n';
 
 @Injectable()
-export class ValidationPipe implements PipeTransform {
-  transform(value: any, metadata: ArgumentMetadata) {
-    return value;
+export class ValidationPipe extends I18nValidationPipe {
+  constructor() {
+    super({
+      whitelist: true,
+      transform: true,
+      validationError: {
+        target: true,
+        value: true,
+      },
+      stopAtFirstError: true,
+      forbidNonWhitelisted: true,
+    });
   }
 }

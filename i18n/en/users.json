@@ -1,3 +1,4 @@
 {
-    "TEST": "easy"
+  "INVALID_PASSWORD": "password must contain at least 8 characters, 1 number and 1 uppercase letter",
+  "PASSWORD_NOT_MATCH": "confirm password does not match the password"
 }

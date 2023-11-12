@@ -1,0 +1,9 @@
+{
+  "NOT_EMPTY": "{property} field cannot be empty",
+  "INVALID": "{property} field is invalid",
+  "INVALID_EMAIL": "email is invalid",
+  "INVALID_PHONE": "phone is invalid",
+  "INVALID_BOOLEAN": "{property} field is not a boolean",
+  "MIN": "{property} field needs to be at least {constraints.0}",
+  "MAX": "{property} field needs to be less than {constraints.0}"
+}
