@@ -1,4 +1,7 @@
 {
+  "CREATE_USER_SUCCESS": "create user successfully",
+  "UPDATE_USER_SUCCESS": "update user successfully",
+  "DELETE_USER_SUCCESS": "delete user successfully",
   "INVALID_PASSWORD": "password must contain at least 8 characters, 1 number and 1 uppercase letter",
   "PASSWORD_NOT_MATCH": "confirm password does not match the password"
 }

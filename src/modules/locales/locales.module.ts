@@ -1,6 +1,12 @@
 import { Module } from '@nestjs/common';
 import * as path from 'path';
-import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import {
+  AcceptLanguageResolver,
+  CookieResolver,
+  HeaderResolver,
+  I18nModule,
+  QueryResolver,
+} from 'nestjs-i18n';
 import { LocalesService } from './locales.service';
 
 @Module({
@@ -12,7 +18,9 @@ import { LocalesService } from './locales.service';
         watch: true,
       },
       resolvers: [
-        { use: QueryResolver, options: ['x-lang'] },
+        new QueryResolver(['lang', 'en']),
+        new HeaderResolver(['x-lang']),
+        new CookieResolver(),
         AcceptLanguageResolver,
       ],
     }),

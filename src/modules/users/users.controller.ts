@@ -3,7 +3,9 @@ import {
   Controller,
   Get,
   NotFoundException,
+  Param,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
@@ -12,6 +14,8 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
 import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import { USER_MESSAGE } from 'src/messages';
 
 @ApiHeader({
   name: 'X-MyHeader',
@@ -27,8 +31,28 @@ export class UsersController {
   ) {}
 
   @Post()
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-    return this.usersService.createUser(createUserDto);
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<{
+    message: string;
+    data: User;
+  }> {
+    return {
+      message: this.localesService.translate(USER_MESSAGE.CREATE_USER_SUCCESS),
+      data: await this.usersService.createUser(createUserDto),
+    };
+  }
+
+  @Put(':userId')
+  async updateUser(
+    @Param('userId') userId: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<{
+    message: string;
+    data: User;
+  }> {
+    return {
+      message: this.localesService.translate(USER_MESSAGE.UPDATE_USER_SUCCESS),
+      data: await this.usersService.updateUser(userId, updateUserDto),
+    };
   }
 
   @Get()
