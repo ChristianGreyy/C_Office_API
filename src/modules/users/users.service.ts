@@ -5,6 +5,7 @@ import { User } from '@prisma/client';
 import { ErrorHelper } from 'src/helpers';
 import { USER_MESSAGE } from 'src/messages';
 import { LocalesService } from '../locales/locales.service';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -24,6 +25,15 @@ export class UsersService {
       data: payload,
     });
     return user;
+  }
+
+  async updateUser(userId: number, updateUserDto: UpdateUserDto): Promise<any> {
+    return this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: updateUserDto,
+    });
   }
 
   async getUsers(): Promise<any> {
