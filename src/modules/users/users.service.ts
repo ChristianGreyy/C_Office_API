@@ -38,6 +38,14 @@ export class UsersService {
     });
   }
 
+  async getUser(userId: number): Promise<User> {
+    return this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+  }
+
   async getUsers(query: GetUsersDto): Promise<IPagination<User>> {
     const { limit, offset, startingId, status } = query;
     const searchQuery = {};

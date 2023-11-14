@@ -47,6 +47,11 @@ export class UsersController {
     };
   }
 
+  @Get(':userId')
+  async getUserById(@Param('userId') userId: number): Promise<User> {
+    return this.usersService.getUser(userId);
+  }
+
   @Get()
   async getUsers(
     @Query() getUsersDto: GetUsersDto,
