@@ -4,3 +4,8 @@ export interface IResponse {
   data?: any;
   errors?: string;
 }
+
+export interface IPagination<T> {
+  total: number;
+  items: T[];
+}

@@ -1,11 +1,13 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from './dtos/create-user.dto';
+import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { ErrorHelper } from 'src/helpers';
 import { USER_MESSAGE } from 'src/messages';
 import { LocalesService } from '../locales/locales.service';
+import { PrismaService } from '../prisma/prisma.service';
+import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { GetUsersDto } from './dtos/get-users.dto';
+import { IPagination } from 'src/interfaces/response.interface';
 
 @Injectable()
 export class UsersService {
@@ -36,8 +38,37 @@ export class UsersService {
     });
   }
 
-  async getUsers(): Promise<any> {
-    const users = await this.prisma.user.findMany();
-    return users;
+  async getUser(userId: number): Promise<User> {
+    return this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+  }
+
+  async getUsers(query: GetUsersDto): Promise<IPagination<User>> {
+    const { limit, offset, startingId, status } = query;
+    const searchQuery = {};
+    if (status) {
+      searchQuery['status'] = status;
+    }
+    const [total, items] = await this.prisma.$transaction([
+      this.prisma.user.count(),
+      this.prisma.user.findMany({
+        take: limit,
+        skip: offset,
+        cursor: {
+          id: startingId ?? 1,
+        },
+        where: {
+          ...searchQuery,
+        },
+      }),
+    ]);
+
+    return {
+      total,
+      items,
+    };
   }
 }
