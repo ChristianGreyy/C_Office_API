@@ -1,21 +1,13 @@
-import {
-  Body,
-  Controller,
-  Get,
-  NotFoundException,
-  Param,
-  Post,
-  Put,
-  Query,
-} from '@nestjs/common';
-import { UsersService } from './users.service';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
+import { User } from '@prisma/client';
+import { USER_MESSAGE } from 'src/messages';
 import { LocalesService } from '../locales/locales.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
-import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
-import { User } from '@prisma/client';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import { USER_MESSAGE } from 'src/messages';
+import { UsersService } from './users.service';
+import { IPagination } from 'src/interfaces/response.interface';
 
 @ApiHeader({
   name: 'X-MyHeader',
@@ -56,10 +48,9 @@ export class UsersController {
   }
 
   @Get()
-  async getUsers(@Query() getUsersDto: GetUsersDto): Promise<User> {
-    throw new NotFoundException(
-      this.localesService.translate('users.PASSWORD_NOT_MATCH', 'vn'),
-    );
-    return this.usersService.getUsers();
+  async getUsers(
+    @Query() getUsersDto: GetUsersDto,
+  ): Promise<IPagination<User>> {
+    return this.usersService.getUsers(getUsersDto);
   }
 }
