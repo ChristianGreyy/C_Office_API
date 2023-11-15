@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { USER_MESSAGE } from 'src/messages';
@@ -48,8 +57,19 @@ export class UsersController {
   }
 
   @Get(':userId')
-  async getUserById(@Param('userId') userId: number): Promise<User> {
+  async getUser(@Param('userId') userId: number): Promise<User> {
     return this.usersService.getUser(userId);
+  }
+
+  @Delete(':userId')
+  async deleteUser(@Param('userId') userId: number): Promise<{
+    message: string;
+    data: User;
+  }> {
+    return {
+      message: this.localesService.translate(USER_MESSAGE.UPDATE_USER_SUCCESS),
+      data: await this.usersService.deleteUser(userId),
+    };
   }
 
   @Get()
