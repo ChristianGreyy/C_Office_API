@@ -2,6 +2,8 @@
   "CREATE_USER_SUCCESS": "create user successfully",
   "UPDATE_USER_SUCCESS": "update user successfully",
   "DELETE_USER_SUCCESS": "delete user successfully",
+  "USER_NOT_FOUND": "the user not found",
   "INVALID_PASSWORD": "password must contain at least 8 characters, 1 number and 1 uppercase letter",
-  "PASSWORD_NOT_MATCH": "confirm password does not match the password"
+  "PASSWORD_NOT_MATCH": "confirm password does not match the password",
+  "EMAIL_EXISTED": "this email is already registered with another user"
 }

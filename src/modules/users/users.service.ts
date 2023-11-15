@@ -18,6 +18,16 @@ export class UsersService {
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { confirmPassword, ...payload } = createUserDto;
+    const existedUser = await this.prisma.user.findUnique({
+      where: {
+        email: payload.email,
+      },
+    });
+    if (existedUser) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(USER_MESSAGE.EMAIL_EXISTED),
+      );
+    }
     if (confirmPassword !== payload.password) {
       ErrorHelper.BadRequestException(
         this.localesService.translate(USER_MESSAGE.PASSWORD_NOT_MATCH),
@@ -30,6 +40,16 @@ export class UsersService {
   }
 
   async updateUser(userId: number, updateUserDto: UpdateUserDto): Promise<any> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) {
+      ErrorHelper.NotFoundException(
+        this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
+      );
+    }
     return this.prisma.user.update({
       where: {
         id: userId,
@@ -39,7 +59,31 @@ export class UsersService {
   }
 
   async getUser(userId: number): Promise<User> {
-    return this.prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) {
+      ErrorHelper.NotFoundException(
+        this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
+      );
+    }
+    return user;
+  }
+
+  async deleteUser(userId: number): Promise<User> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user) {
+      ErrorHelper.NotFoundException(
+        this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
+      );
+    }
+    return this.prisma.user.delete({
       where: {
         id: userId,
       },

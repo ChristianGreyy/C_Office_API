@@ -2,6 +2,8 @@
   "CREATE_USER_SUCCESS": "tạo người dùng thành công",
   "UPDATE_USER_SUCCESS": "cập nhật người dùng thành công",
   "DELETE_USER_SUCCESS": "xóa người dùng thành công",
+  "USER_NOT_FOUND": "người dùng không tồn tại",
   "INVALID_PASSWORD": "mật khẩu phải có ít nhất 8 ký tự, 1 số và 1 chữ in hoa",
-  "PASSWORD_NOT_MATCH": "xác nhận mật khẩu không khớp với mật khẩu"
+  "PASSWORD_NOT_MATCH": "xác nhận mật khẩu không khớp với mật khẩu",
+  "EMAIL_EXISTED": "email này đã được đăng ký với người dùng khác"
 }
