@@ -27,8 +27,8 @@ import { IPagination } from 'src/interfaces/response.interface';
 @Controller('users')
 export class UsersController {
   constructor(
-    private usersService: UsersService,
-    private localesService: LocalesService,
+    private readonly usersService: UsersService,
+    private readonly localesService: LocalesService,
   ) {}
 
   @Post()

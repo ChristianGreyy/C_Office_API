@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { ErrorHelper } from 'src/helpers';
 import { USER_MESSAGE } from 'src/messages';
 import { LocalesService } from '../locales/locales.service';
@@ -8,6 +8,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
 import { IPagination } from 'src/interfaces/response.interface';
+import { IUser } from 'src/interfaces';
 
 @Injectable()
 export class UsersService {
@@ -114,5 +115,13 @@ export class UsersService {
       total,
       items,
     };
+  }
+
+  async findOne(properties: Prisma.UserWhereUniqueInput): Promise<User> {
+    return this.prisma.user.findUnique({
+      where: {
+        ...properties,
+      },
+    });
   }
 }
