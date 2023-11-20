@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { ErrorHelper } from 'src/helpers';
+import { IPagination } from 'src/interfaces/response.interface';
 import { USER_MESSAGE } from 'src/messages';
 import { LocalesService } from '../locales/locales.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dtos/create-user.dto';
-import { UpdateUserDto } from './dtos/update-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
-import { IPagination } from 'src/interfaces/response.interface';
-import { IUser } from 'src/interfaces';
+import { UpdateUserDto } from './dtos/update-user.dto';
+import * as bcrypt from 'bcryptjs';
+import { SALT_ROUNDS } from 'src/constants';
 
 @Injectable()
 export class UsersService {
@@ -34,8 +35,12 @@ export class UsersService {
         this.localesService.translate(USER_MESSAGE.PASSWORD_NOT_MATCH),
       );
     }
+    const hashPassword = await bcrypt.hash(payload.password, SALT_ROUNDS);
     const user = await this.prisma.user.create({
-      data: payload,
+      data: {
+        ...payload,
+        password: hashPassword,
+      },
     });
     return user;
   }
