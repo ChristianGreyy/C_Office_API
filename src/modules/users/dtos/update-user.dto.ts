@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
 import { PASSWORD_REGEX, PHONE_VN_REGEX } from 'src/constants';
-import { EUserStatus } from 'src/enums/users/users.enum';
+import { EUserStatus } from 'src/common/enums/users.enum';
 import { COMMON_MESSAGE } from 'src/messages';
 
 export class UpdateUserDto {

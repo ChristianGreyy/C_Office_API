@@ -10,6 +10,7 @@ import { GetUsersDto } from './dtos/get-users.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import * as bcrypt from 'bcryptjs';
 import { SALT_ROUNDS } from 'src/constants';
+import { EUserRole } from 'src/common/enums';
 
 @Injectable()
 export class UsersService {
@@ -40,6 +41,7 @@ export class UsersService {
       data: {
         ...payload,
         password: hashPassword,
+        role: EUserRole.USER,
       },
     });
     return user;

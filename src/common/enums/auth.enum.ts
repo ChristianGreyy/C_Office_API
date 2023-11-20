@@ -1,4 +1,4 @@
 export const enum EUserRole {
-  USER = 'user',
-  ADMIN = 'admin',
+  USER = 'USER',
+  ADMIN = 'ADMIN',
 }
