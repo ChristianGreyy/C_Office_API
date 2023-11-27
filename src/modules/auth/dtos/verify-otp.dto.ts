@@ -1,27 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
-import { PASSWORD_REGEX } from 'src/constants';
 import { COMMON_MESSAGE } from 'src/messages';
 
-export class LoginDto {
-  @IsEmail({}, { message: i18nValidationMessage(COMMON_MESSAGE.INVALID_EMAIL) })
+export class VerifyOtpDto {
+  @IsString({ message: i18nValidationMessage(COMMON_MESSAGE.INVALID) })
   @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
   @ApiProperty({
-    name: 'email',
+    name: 'otp code',
     type: String,
     required: true,
   })
-  email: string;
+  otpCode: string;
 
-  @Matches(PASSWORD_REGEX, {
-    message: i18nValidationMessage('users.INVALID_PASSWORD'),
-  })
+  @IsString({ message: i18nValidationMessage(COMMON_MESSAGE.INVALID) })
   @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
   @ApiProperty({
-    name: 'password',
+    name: 'hash',
     type: String,
     required: true,
   })
-  password: string;
+  hash: string;
 }

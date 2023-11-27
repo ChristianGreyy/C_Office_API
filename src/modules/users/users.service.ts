@@ -58,6 +58,8 @@ export class UsersService {
         this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
       );
     }
+    const hashPassword = await bcrypt.hash(updateUserDto.password, SALT_ROUNDS);
+    updateUserDto['password'] = hashPassword;
     return this.prisma.user.update({
       where: {
         id: userId,
@@ -124,11 +126,19 @@ export class UsersService {
     };
   }
 
-  async findOne(properties: Prisma.UserWhereUniqueInput): Promise<User> {
+  async findOne(where: Prisma.UserWhereUniqueInput): Promise<User> {
     return this.prisma.user.findUnique({
-      where: {
-        ...properties,
-      },
+      where,
+    });
+  }
+
+  async updateOne(
+    where: Prisma.UserWhereUniqueInput,
+    data: Prisma.XOR<Prisma.UserUpdateInput, Prisma.UserUncheckedUpdateInput>,
+  ): Promise<User> {
+    return this.prisma.user.update({
+      where,
+      data,
     });
   }
 }
