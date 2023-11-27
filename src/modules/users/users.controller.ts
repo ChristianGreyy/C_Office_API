@@ -18,7 +18,7 @@ import { GetUsersDto } from './dtos/get-users.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
 import { IPagination } from 'src/interfaces/response.interface';
-import { Auth } from 'src/common/decorators/auth.decorator';
+import { AuthDecorator } from 'src/common/decorators/auth.decorator';
 import { EUserRole } from 'src/common/enums';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 
@@ -37,7 +37,7 @@ export class UsersController {
 
   @Post()
   @UseGuards(AuthGuard)
-  @Auth([EUserRole.ADMIN])
+  @AuthDecorator([EUserRole.ADMIN])
   async createUser(@Body() createUserDto: CreateUserDto): Promise<{
     message: string;
     data: User;
@@ -50,7 +50,7 @@ export class UsersController {
 
   @Put(':userId')
   @UseGuards(AuthGuard)
-  @Auth([EUserRole.ADMIN])
+  @AuthDecorator([EUserRole.ADMIN])
   async updateUser(
     @Param('userId') userId: number,
     @Body() updateUserDto: UpdateUserDto,
@@ -66,14 +66,14 @@ export class UsersController {
 
   @Get(':userId')
   @UseGuards(AuthGuard)
-  @Auth([EUserRole.ADMIN])
+  @AuthDecorator([EUserRole.ADMIN])
   async getUser(@Param('userId') userId: number): Promise<User> {
     return this.usersService.getUser(userId);
   }
 
   @Delete(':userId')
   @UseGuards(AuthGuard)
-  @Auth([EUserRole.ADMIN])
+  @AuthDecorator([EUserRole.ADMIN])
   async deleteUser(@Param('userId') userId: number): Promise<{
     message: string;
     data: User;
@@ -86,7 +86,7 @@ export class UsersController {
 
   @Get()
   @UseGuards(AuthGuard)
-  @Auth([EUserRole.ADMIN])
+  @AuthDecorator([EUserRole.ADMIN, EUserRole.USER])
   async getUsers(
     @Query() getUsersDto: GetUsersDto,
   ): Promise<IPagination<User>> {
