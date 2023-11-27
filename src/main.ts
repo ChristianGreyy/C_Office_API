@@ -1,21 +1,17 @@
-import { HttpAdapterHost, NestFactory } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
+import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
-import { ValidationPipe } from './common/pipes/validation.pipe';
-import { TransformInterceptor } from './common/interceptors/transform.interceptor';
-import { swaggerConfig } from './docs/swagger';
-import { I18nValidationExceptionFilter, I18nValidationPipe } from 'nestjs-i18n';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { ValidationPipe } from './common/pipes/validation.pipe';
+import { swaggerConfig } from './docs/swagger';
 
 async function bootstrap() {
+  dotenv.config();
   const app = await NestFactory.create(AppModule);
 
-  const httpAdapterHost = app.get(HttpAdapterHost);
-  // app.useGlobalFilters(new HttpExceptionsFilter(httpAdapterHost));
   app.useGlobalFilters(new HttpExceptionFilter());
-  // app.useGlobalFilters(new I18nValidationExceptionFilter());
   app.useGlobalPipes(new ValidationPipe());
-
-  // app.useGlobalPipes(new I18nValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
 
   swaggerConfig(app);
