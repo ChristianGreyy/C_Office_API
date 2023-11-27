@@ -1,6 +1,5 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { User } from '@prisma/client';
 import { AUTH_MESSAGE } from 'src/messages/auth.message';
 import { LocalesService } from '../locales/locales.service';
 import { AuthService } from './auth.service';
@@ -9,6 +8,11 @@ import { ILogin } from 'src/interfaces/auth.interface';
 import { ForgotPasswordDto } from './dtos/forgot-password.dto';
 import { VerifyOtpDto } from './dtos/verify-otp.dto';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
+import { AuthDecorator } from 'src/common/decorators/auth.decorator';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { ChangePasswordDto } from './dtos/change-password.dto';
+import { UserDecorator } from 'src/common/decorators/user.decorator';
+import { EUserRole } from 'src/common/enums';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -49,7 +53,25 @@ export class AuthController {
   async resetPassword(@Body() resetPassword: ResetPasswordDto): Promise<any> {
     const hash = await this.authService.resetPassword(resetPassword);
     return {
-      message: this.localesService.translate(AUTH_MESSAGE.RESET_PASSWORD_SUCCESS),
+      message: this.localesService.translate(
+        AUTH_MESSAGE.RESET_PASSWORD_SUCCESS,
+      ),
+      data: hash,
+    };
+  }
+
+  @Post('change-password')
+  @UseGuards(AuthGuard)
+  @AuthDecorator([EUserRole.ADMIN, EUserRole.USER])
+  async changePassword(
+    @Body() changePassword: ChangePasswordDto,
+    @UserDecorator('id') userId: number,
+  ): Promise<any> {
+    const hash = await this.authService.changePassword(userId, changePassword);
+    return {
+      message: this.localesService.translate(
+        AUTH_MESSAGE.CHANGE_PASSWORD_SUCCESS,
+      ),
       data: hash,
     };
   }

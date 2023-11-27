@@ -23,6 +23,7 @@ import * as moment from 'moment';
 import { EMomentFormat, EMomentUnit } from 'src/common/enums';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { USER_MESSAGE } from 'src/messages';
+import { ChangePasswordDto } from './dtos/change-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -146,6 +147,26 @@ export class AuthService {
     return this.usersService.updateOne(
       {
         id: user.id,
+      },
+      {
+        password: hashPassword,
+      },
+    );
+  }
+
+  async changePassword(
+    userId: number,
+    { password, confirmPassword }: ChangePasswordDto,
+  ): Promise<User> {
+    if (confirmPassword !== password) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(USER_MESSAGE.PASSWORD_NOT_MATCH),
+      );
+    }
+    const hashPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    return this.usersService.updateOne(
+      {
+        id: userId,
       },
       {
         password: hashPassword,
