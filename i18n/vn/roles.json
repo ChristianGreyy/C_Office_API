@@ -1,0 +1,7 @@
+{
+  "CREATE_ROLE_SUCCESS": "tạo quyền thành công",
+  "UPDATE_ROLE_SUCCESS": "cập nhật quyền thành công",
+  "DELETE_ROLE_SUCCESS": "xóa quyền thành công",
+  "ROLE_NOT_FOUND": "quyền không tồn tại",
+  "ROLE_EXISTED": "quyền này đã tồn tại"
+}

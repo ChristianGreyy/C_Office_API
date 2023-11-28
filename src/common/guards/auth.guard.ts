@@ -35,7 +35,6 @@ export class AuthGuard implements CanActivate {
       const user = await this.usersService.findOne({
         id: payload.sub,
       });
-      console.log('roles', roles);
       if (!user || !roles.includes(user?.role)) {
         throw new UnauthorizedException();
       }
@@ -43,7 +42,6 @@ export class AuthGuard implements CanActivate {
     } catch {
       throw new UnauthorizedException();
     }
-    console.log(request['user']);
     return true;
   }
 
