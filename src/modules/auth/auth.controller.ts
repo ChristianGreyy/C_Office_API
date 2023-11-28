@@ -1,18 +1,19 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { User } from '@prisma/client';
+import { AuthDecorator } from 'src/common/decorators/auth.decorator';
+import { UserDecorator } from 'src/common/decorators/user.decorator';
+import { EUserRole } from 'src/common/enums';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { ILogin } from 'src/interfaces/auth.interface';
 import { AUTH_MESSAGE } from 'src/messages/auth.message';
 import { LocalesService } from '../locales/locales.service';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dtos/login.dto';
-import { ILogin } from 'src/interfaces/auth.interface';
-import { ForgotPasswordDto } from './dtos/forgot-password.dto';
-import { VerifyOtpDto } from './dtos/verify-otp.dto';
-import { ResetPasswordDto } from './dtos/reset-password.dto';
-import { AuthDecorator } from 'src/common/decorators/auth.decorator';
-import { AuthGuard } from 'src/common/guards/auth.guard';
 import { ChangePasswordDto } from './dtos/change-password.dto';
-import { UserDecorator } from 'src/common/decorators/user.decorator';
-import { EUserRole } from 'src/common/enums';
+import { ForgotPasswordDto } from './dtos/forgot-password.dto';
+import { LoginDto } from './dtos/login.dto';
+import { ResetPasswordDto } from './dtos/reset-password.dto';
+import { VerifyOtpDto } from './dtos/verify-otp.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -36,12 +37,15 @@ export class AuthController {
   @Post('forgot-password')
   async forgotPassword(
     @Body() forgotPasswordDto: ForgotPasswordDto,
-  ): Promise<any> {
+  ): Promise<string> {
     return this.authService.forgotPassword(forgotPasswordDto);
   }
 
   @Post('verify-otp')
-  async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto): Promise<any> {
+  async verifyOtp(@Body() verifyOtpDto: VerifyOtpDto): Promise<{
+    message: string;
+    data: string;
+  }> {
     const hash = await this.authService.verifyOtp(verifyOtpDto);
     return {
       message: this.localesService.translate(AUTH_MESSAGE.VERIFY_OTP_SUCCESS),
@@ -50,13 +54,16 @@ export class AuthController {
   }
 
   @Post('reset-password')
-  async resetPassword(@Body() resetPassword: ResetPasswordDto): Promise<any> {
-    const hash = await this.authService.resetPassword(resetPassword);
+  async resetPassword(@Body() resetPassword: ResetPasswordDto): Promise<{
+    message: string;
+    data: User;
+  }> {
+    const user = await this.authService.resetPassword(resetPassword);
     return {
       message: this.localesService.translate(
         AUTH_MESSAGE.RESET_PASSWORD_SUCCESS,
       ),
-      data: hash,
+      data: user,
     };
   }
 
@@ -66,13 +73,16 @@ export class AuthController {
   async changePassword(
     @Body() changePassword: ChangePasswordDto,
     @UserDecorator('id') userId: number,
-  ): Promise<any> {
-    const hash = await this.authService.changePassword(userId, changePassword);
+  ): Promise<{
+    message: string;
+    data: User;
+  }> {
+    const user = await this.authService.changePassword(userId, changePassword);
     return {
       message: this.localesService.translate(
         AUTH_MESSAGE.CHANGE_PASSWORD_SUCCESS,
       ),
-      data: hash,
+      data: user,
     };
   }
 }

@@ -11,16 +11,16 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
+import { AuthDecorator } from 'src/common/decorators/auth.decorator';
+import { EUserRole } from 'src/common/enums';
+import { AuthGuard } from 'src/common/guards/auth.guard';
+import { IPagination } from 'src/interfaces/response.interface';
 import { USER_MESSAGE } from 'src/messages';
 import { LocalesService } from '../locales/locales.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
-import { IPagination } from 'src/interfaces/response.interface';
-import { AuthDecorator } from 'src/common/decorators/auth.decorator';
-import { EUserRole } from 'src/common/enums';
-import { AuthGuard } from 'src/common/guards/auth.guard';
 
 @ApiHeader({
   name: 'X-MyHeader',

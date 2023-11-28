@@ -1,0 +1,7 @@
+{
+  "CREATE_ROLE_SUCCESS": "create role successfully",
+  "UPDATE_ROLE_SUCCESS": "update role successfully",
+  "DELETE_ROLE_SUCCESS": "delete role successfully",
+  "ROLE_NOT_FOUND": "the role not found",
+  "ROLE_EXISTED": "the role already exists"
+}
