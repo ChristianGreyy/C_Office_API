@@ -38,9 +38,19 @@ model User {
 }
 
 model Role {
+  id            Int      @id @default(autoincrement())
+  name          String   @unique @db.VarChar(30)
+  permissionIds Json     @default("[]")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  posts         User[]
+}
+
+model Permission {
   id        Int      @id @default(autoincrement())
-  name      String   @unique @db.VarChar(30)
+  module    String   @db.VarChar(30)
+  name      String   @db.VarChar(30)
+  slug      String   @db.VarChar(30)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  posts     User[]
 }
