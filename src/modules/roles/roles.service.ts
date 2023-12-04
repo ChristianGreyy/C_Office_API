@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Role } from '@prisma/client';
+import { Role } from '@prisma/client';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
-import { ROLE_MESSAGE } from 'src/messages';
+import { PERMISSION_MESSAGE, ROLE_MESSAGE } from 'src/messages';
 import { LocalesService } from '../locales/locales.service';
+import { PermissionsService } from '../permissions/permissions.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRoleDto } from './dtos/create-role.dto';
 import { GetRolesDto } from './dtos/get-roles.dto';
@@ -14,9 +15,24 @@ export class RolesService {
   constructor(
     private readonly prisma: PrismaService,
     private localesService: LocalesService,
+    private permissionsService: PermissionsService,
   ) {}
 
   async createRole(payload: CreateRoleDto): Promise<Role> {
+    const permissions = await this.permissionsService.findMany({
+      where: {
+        id: {
+          in: payload.permissionIds,
+        },
+      },
+    });
+    if (permissions.length !== payload.permissionIds.length) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(
+          PERMISSION_MESSAGE.PERMISSION_IDS_INVALID,
+        ),
+      );
+    }
     const role = await this.prisma.role.findFirst({
       where: {
         name: {
@@ -116,19 +132,11 @@ export class RolesService {
     };
   }
 
-  async findOne(where: Prisma.RoleWhereUniqueInput): Promise<Role> {
-    return this.prisma.role.findUnique({
-      where,
-    });
+  async findOne(args: any): Promise<Role> {
+    return this.prisma.role.findUnique(args);
   }
 
-  async updateOne(
-    where: Prisma.RoleWhereUniqueInput,
-    data: Prisma.XOR<Prisma.RoleUpdateInput, Prisma.RoleUncheckedUpdateInput>,
-  ): Promise<Role> {
-    return this.prisma.role.update({
-      where,
-      data,
-    });
+  async updateOne(args: any): Promise<Role> {
+    return this.prisma.role.update(args);
   }
 }

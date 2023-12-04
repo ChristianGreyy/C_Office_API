@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Permission" ALTER COLUMN "module" DROP NOT NULL,
+ALTER COLUMN "name" DROP NOT NULL,
+ALTER COLUMN "slug" DROP NOT NULL;

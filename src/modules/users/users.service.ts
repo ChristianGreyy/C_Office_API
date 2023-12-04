@@ -21,6 +21,16 @@ export class UsersService {
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     const { confirmPassword, ...payload } = createUserDto;
+    const role = await this.prisma.role.findUnique({
+      where: {
+        name: EUserRole.USER,
+      },
+    });
+    if (!role) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(USER_MESSAGE.CREATE_USER_FAIL),
+      );
+    }
     const existedUser = await this.prisma.user.findUnique({
       where: {
         email: payload.email,
@@ -41,7 +51,7 @@ export class UsersService {
       data: {
         ...payload,
         password: hashPassword,
-        role: EUserRole.USER,
+        roleId: role.id,
       },
     });
     return user;
@@ -128,20 +138,11 @@ export class UsersService {
       items,
     };
   }
-
-  async findOne(where: Prisma.UserWhereUniqueInput): Promise<User> {
-    return this.prisma.user.findUnique({
-      where,
-    });
+  async findOne(args: any): Promise<User> {
+    return this.prisma.user.findFirst(args);
   }
 
-  async updateOne(
-    where: Prisma.UserWhereUniqueInput,
-    data: Prisma.XOR<Prisma.UserUpdateInput, Prisma.UserUncheckedUpdateInput>,
-  ): Promise<User> {
-    return this.prisma.user.update({
-      where,
-      data,
-    });
+  async updateOne(args: any): Promise<User> {
+    return this.prisma.user.update(args);
   }
 }

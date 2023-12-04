@@ -1,5 +1,6 @@
 {
   "CREATE_USER_SUCCESS": "tạo người dùng thành công",
+  "CREATE_USER_FAIL": "tạo người dùng không thành công",
   "UPDATE_USER_SUCCESS": "cập nhật người dùng thành công",
   "DELETE_USER_SUCCESS": "xóa người dùng thành công",
   "USER_NOT_FOUND": "người dùng không tồn tại",

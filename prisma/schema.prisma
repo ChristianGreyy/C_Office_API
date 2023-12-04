@@ -11,13 +11,13 @@ datasource db {
 }
 
 enum EUserStatus {
-  ACTIVE
-  INACTIVE
+  active
+  inactive
 }
 
 enum EUserRole {
-  ADMIN
-  USER
+  admin
+  user
 }
 
 model User {
@@ -28,12 +28,11 @@ model User {
   firstName    String?      @map("first_name") @db.VarChar(30)
   lastName     String?      @map("last_name") @db.VarChar(30)
   status       EUserStatus?
-  role         EUserRole?
   checkInDate  DateTime?    @default(now()) @map("check_in_date")
   checkOutDate DateTime?    @map("check_out_date")
   createdAt    DateTime     @default(now()) @map("created_at")
   updatedAt    DateTime     @updatedAt @map("updated_at")
-  Role         Role?        @relation(fields: [roleId], references: [id])
+  role         Role?        @relation(fields: [roleId], references: [id])
   roleId       Int?
 }
 
@@ -43,14 +42,14 @@ model Role {
   permissionIds Json     @default("[]")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
-  posts         User[]
+  users         User[]
 }
 
 model Permission {
   id        Int      @id @default(autoincrement())
-  module    String   @db.VarChar(30)
-  name      String   @db.VarChar(30)
-  slug      String   @db.VarChar(30)
+  module    String?   @db.VarChar(30)
+  name      String?   @db.VarChar(30)
+  slug      String?   @db.VarChar(30)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 }

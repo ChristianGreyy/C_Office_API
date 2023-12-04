@@ -1,5 +1,6 @@
 {
   "CREATE_USER_SUCCESS": "create user successfully",
+  "CREATE_USER_FAIL": "create user failed",
   "UPDATE_USER_SUCCESS": "update user successfully",
   "DELETE_USER_SUCCESS": "delete user successfully",
   "USER_NOT_FOUND": "the user not found",

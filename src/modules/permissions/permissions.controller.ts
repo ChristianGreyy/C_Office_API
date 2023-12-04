@@ -12,7 +12,7 @@ import {
 import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { Permission } from '@prisma/client';
 import { AuthDecorator } from 'src/common/decorators/auth.decorator';
-import { EUserRole } from 'src/common/enums';
+import { EUserPermission, EUserRole } from 'src/common/enums';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { IPagination } from 'src/interfaces/response.interface';
 import { ROLE_MESSAGE } from 'src/messages';
@@ -21,6 +21,7 @@ import { CreatePermissionDto } from './dtos/create-permission.dto';
 import { GetPermissionsDto } from './dtos/get-permissions.dto';
 import { UpdatePermissionDto } from './dtos/update-permission.dto';
 import { PermissionsService } from './permissions.service';
+import { PermissionDecorator } from 'src/common/decorators/permission.decorator';
 
 @ApiHeader({
   name: 'X-MyHeader',
@@ -38,6 +39,7 @@ export class PermissionsController {
   @Post()
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.CREATE_PERMISSION)
   async createPermission(
     @Body() createPermissionDto: CreatePermissionDto,
   ): Promise<{
@@ -53,6 +55,7 @@ export class PermissionsController {
   @Put(':permissionId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.UPDATE_PERMISSION)
   async updatePermission(
     @Param('permissionId') permissionId: number,
     @Body() updatePermissionDto: UpdatePermissionDto,
@@ -72,6 +75,7 @@ export class PermissionsController {
   @Get(':permissionId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.GET_PERMISSION)
   async getPermission(
     @Param('permissionId') permissionId: number,
   ): Promise<Permission> {
@@ -81,6 +85,7 @@ export class PermissionsController {
   @Delete(':permissionId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.DELETE_PERMISSION)
   async deletePermission(@Param('permissionId') permissionId: number): Promise<{
     message: string;
     data: Permission;
@@ -94,6 +99,7 @@ export class PermissionsController {
   @Get()
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN, EUserRole.USER])
+  @PermissionDecorator(EUserPermission.GET_PERMISSIONS)
   async getPermissions(
     @Query() getPermissionsDto: GetPermissionsDto,
   ): Promise<IPagination<Permission>> {

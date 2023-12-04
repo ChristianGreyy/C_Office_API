@@ -1,5 +1,7 @@
 export const ROLES = 'roles';
 
+export const PERMISSIONS = 'permissions';
+
 export const SALT_ROUNDS = 7;
 
 // company-management SHA1 Hash

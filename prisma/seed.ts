@@ -55,6 +55,32 @@ async function main() {
         name: 'Delete role',
         slug: 'delete_role',
       },
+      // permissions
+      {
+        module: 'permissions',
+        name: 'Create permission',
+        slug: 'create_permission',
+      },
+      {
+        module: 'permissions',
+        name: 'Get all permissions',
+        slug: 'get_permissions',
+      },
+      {
+        module: 'permissions',
+        name: 'Get permission',
+        slug: 'get_permission',
+      },
+      {
+        module: 'permissions',
+        name: 'Update permission',
+        slug: 'update_permission',
+      },
+      {
+        module: 'permissions',
+        name: 'Delete permission',
+        slug: 'delete_permission',
+      },
     ],
   });
 }
