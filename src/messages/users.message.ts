@@ -1,5 +1,6 @@
 export const USER_MESSAGE = {
   CREATE_USER_SUCCESS: 'users.CREATE_USER_SUCCESS' as never,
+  CREATE_USER_FAIL: 'users.CREATE_USER_FAIL' as never,
   UPDATE_USER_SUCCESS: 'users.UPDATE_USER_SUCCESS' as never,
   DELETE_USER_SUCCESS: 'users.DELETE_USER_SUCCESS' as never,
   USER_NOT_FOUND: 'users.USER_NOT_FOUND' as never,

@@ -1,0 +1,8 @@
+{
+  "CREATE_PERMISSION_SUCCESS": "create permission successfully",
+  "UPDATE_PERMISSION_SUCCESS": "update permission successfully",
+  "DELETE_PERMISSION_SUCCESS": "delete permission successfully",
+  "PERMISSION_NOT_FOUND": "the permission not found",
+  "PERMISSION_EXISTED": "the permission already exists",
+  "PERMISSION_IDS_INVALID": "the permission ids are invalid"
+}

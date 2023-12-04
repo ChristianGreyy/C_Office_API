@@ -1,0 +1,9 @@
+{
+  "NOT_EMPTY": "Trường {property} không được để trống",
+  "INVALID": "Trường {property} không hợp lệ",
+  "INVALID_EMAIL": "email không hợp lệ",
+  "INVALID_PHONE": "điện thoại không hợp lệ",
+  "INVALID_BOOLEAN": "Trường {property} không phải là boolean",
+  "MIN": "Trường {property} cần ít nhất là {constraints.0}",
+  "MAX": "Trường {property} cần phải nhỏ hơn {constraints.0}"
+}

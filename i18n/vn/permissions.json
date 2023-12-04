@@ -1,0 +1,8 @@
+{
+  "CREATE_PERMISSION_SUCCESS": "tạo quyền thành công",
+  "UPDATE_PERMISSION_SUCCESS": "cập nhật quyền thành công",
+  "DELETE_PERMISSION_SUCCESS": "xóa quyền thành công",
+  "PERMISSION_NOT_FOUND": "quyền không tồn tại",
+  "PERMISSION_EXISTED": "quyền này đã tồn tại",
+  "PERMISSION_IDS_INVALID": "các id của quyền không hợp lệ"
+}

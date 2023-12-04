@@ -12,7 +12,7 @@ import {
 import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { AuthDecorator } from 'src/common/decorators/auth.decorator';
-import { EUserRole } from 'src/common/enums';
+import { EUserPermission, EUserRole } from 'src/common/enums';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { IPagination } from 'src/interfaces/response.interface';
 import { ROLE_MESSAGE } from 'src/messages';
@@ -21,6 +21,7 @@ import { CreateRoleDto } from './dtos/create-role.dto';
 import { GetRolesDto } from './dtos/get-roles.dto';
 import { UpdateRoleDto } from './dtos/update-role.dto';
 import { RolesService } from './roles.service';
+import { PermissionDecorator } from 'src/common/decorators/permission.decorator';
 
 @ApiHeader({
   name: 'X-MyHeader',
@@ -38,6 +39,7 @@ export class RolesController {
   @Post()
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.CREATE_ROLE)
   async createRole(@Body() createRoleDto: CreateRoleDto): Promise<{
     message: string;
     data: Role;
@@ -51,6 +53,7 @@ export class RolesController {
   @Put(':roleId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.UPDATE_ROLE)
   async updateRole(
     @Param('roleId') roleId: number,
     @Body() updateRoleDto: UpdateRoleDto,
@@ -67,6 +70,7 @@ export class RolesController {
   @Get(':roleId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.GET_ROLE)
   async getRole(@Param('roleId') roleId: number): Promise<Role> {
     return this.rolesService.getRole(roleId);
   }
@@ -74,6 +78,7 @@ export class RolesController {
   @Delete(':roleId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.DELETE_ROLE)
   async deleteRole(@Param('roleId') roleId: number): Promise<{
     message: string;
     data: Role;
@@ -87,6 +92,7 @@ export class RolesController {
   @Get()
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN, EUserRole.USER])
+  @PermissionDecorator(EUserPermission.GET_ROLES)
   async getRoles(
     @Query() getRolesDto: GetRolesDto,
   ): Promise<IPagination<Role>> {

@@ -12,7 +12,7 @@ import {
 import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { AuthDecorator } from 'src/common/decorators/auth.decorator';
-import { EUserRole } from 'src/common/enums';
+import { EUserPermission, EUserRole } from 'src/common/enums';
 import { AuthGuard } from 'src/common/guards/auth.guard';
 import { IPagination } from 'src/interfaces/response.interface';
 import { USER_MESSAGE } from 'src/messages';
@@ -21,6 +21,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UsersService } from './users.service';
+import { PermissionDecorator } from 'src/common/decorators/permission.decorator';
 
 @ApiHeader({
   name: 'X-MyHeader',
@@ -38,6 +39,7 @@ export class UsersController {
   @Post()
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.CREATE_USER)
   async createUser(@Body() createUserDto: CreateUserDto): Promise<{
     message: string;
     data: User;
@@ -51,6 +53,7 @@ export class UsersController {
   @Put(':userId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.UPDATE_USER)
   async updateUser(
     @Param('userId') userId: number,
     @Body() updateUserDto: UpdateUserDto,
@@ -67,6 +70,7 @@ export class UsersController {
   @Get(':userId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.GET_USER)
   async getUser(@Param('userId') userId: number): Promise<User> {
     return this.usersService.getUser(userId);
   }
@@ -74,6 +78,7 @@ export class UsersController {
   @Delete(':userId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.DELETE_USER)
   async deleteUser(@Param('userId') userId: number): Promise<{
     message: string;
     data: User;
@@ -86,7 +91,8 @@ export class UsersController {
 
   @Get()
   @UseGuards(AuthGuard)
-  @AuthDecorator([EUserRole.ADMIN, EUserRole.USER])
+  @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.GET_USERS)
   async getUsers(
     @Query() getUsersDto: GetUsersDto,
   ): Promise<IPagination<User>> {

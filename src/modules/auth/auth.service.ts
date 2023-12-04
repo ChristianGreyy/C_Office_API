@@ -38,7 +38,9 @@ export class AuthService {
   async login(loginDto: LoginDto): Promise<ILogin> {
     const { email, password } = loginDto;
     const user = await this.usersService.findOne({
-      email,
+      where: {
+        email,
+      },
     });
     if (!user) {
       ErrorHelper.BadRequestException(
@@ -144,14 +146,14 @@ export class AuthService {
     }
     const hashPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
-    return this.usersService.updateOne(
-      {
+    return this.usersService.updateOne({
+      where: {
         id: user.id,
       },
-      {
+      data: {
         password: hashPassword,
       },
-    );
+    });
   }
 
   async changePassword(
@@ -164,13 +166,13 @@ export class AuthService {
       );
     }
     const hashPassword = await bcrypt.hash(password, SALT_ROUNDS);
-    return this.usersService.updateOne(
-      {
+    return this.usersService.updateOne({
+      where: {
         id: userId,
       },
-      {
+      data: {
         password: hashPassword,
       },
-    );
+    });
   }
 }

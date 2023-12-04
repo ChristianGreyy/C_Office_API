@@ -121,22 +121,15 @@ export class PermissionsService {
     };
   }
 
-  async findOne(where: Prisma.PermissionWhereUniqueInput): Promise<Permission> {
-    return this.prisma.permission.findUnique({
-      where,
-    });
+  async findOne(args: any): Promise<Permission> {
+    return this.prisma.permission.findFirst(args);
   }
 
-  async updateOne(
-    where: Prisma.PermissionWhereUniqueInput,
-    data: Prisma.XOR<
-      Prisma.PermissionUpdateInput,
-      Prisma.PermissionUncheckedUpdateInput
-    >,
-  ): Promise<Permission> {
-    return this.prisma.permission.update({
-      where,
-      data,
-    });
+  async findMany(args: any): Promise<Permission[]> {
+    return this.prisma.permission.findMany(args);
+  }
+
+  async updateOne(args: any): Promise<Permission> {
+    return this.prisma.permission.update(args);
   }
 }
