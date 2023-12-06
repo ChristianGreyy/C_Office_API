@@ -6,5 +6,6 @@
   "USER_NOT_FOUND": "người dùng không tồn tại",
   "INVALID_PASSWORD": "mật khẩu phải có ít nhất 8 ký tự, 1 số và 1 chữ in hoa",
   "PASSWORD_NOT_MATCH": "xác nhận mật khẩu không khớp với mật khẩu",
-  "EMAIL_EXISTED": "email này đã được đăng ký với người dùng khác"
+  "EMAIL_EXISTED": "email này đã được đăng ký với người dùng khác",
+  "PHONE_EXISTED": "số điện thoại này đã được đăng ký với người dùng khác"
 }

@@ -41,42 +41,43 @@ export class AuthGuard implements CanActivate {
     if (!token) {
       throw new UnauthorizedException();
     }
+    let payload;
     try {
-      const payload = await this.jwtService.verifyAsync(token, {
+      payload = await this.jwtService.verifyAsync(token, {
         secret: JWT.SECRET,
       });
-      const user = await this.usersService.findOne({
-        where: {
-          id: payload.sub,
-        },
-        include: {
-          role: true,
-        },
-      });
-      if (!user || !roles.includes(user?.['role']?.name)) {
-        throw new UnauthorizedException();
-      }
-      if (roles.length === 1 && roles[0] === EUserRole.ADMIN) {
-        console.log('permission', permission);
-        const checkPermission = await this.permissionsService.findOne({
-          where: {
-            slug: permission,
-          },
-        });
-        if (
-          checkPermission &&
-          user?.['role']?.['permissionIds']?.includes(checkPermission.name)
-        ) {
-          ErrorHelper.NotFoundException(
-            this.localesService.translate(AUTH_MESSAGE.NO_PERMISSION),
-          );
-        }
-      }
-      request['user'] = user;
     } catch (err) {
-      console.log(err);
       throw new UnauthorizedException();
     }
+    const user = await this.usersService.findOne({
+      where: {
+        id: payload.sub,
+      },
+      include: {
+        role: true,
+      },
+    });
+    if (!user || !roles.includes(user?.['role']?.name)) {
+      throw new UnauthorizedException();
+    }
+    if (roles.length === 1 && roles[0] === EUserRole.ADMIN) {
+      const checkPermission = await this.permissionsService.findOne({
+        where: {
+          slug: permission,
+        },
+      });
+      if (
+        checkPermission &&
+        user?.['role']?.['permissionIds']?.includes(checkPermission.name)
+      ) {
+        ErrorHelper.NotFoundException(
+          this.localesService.translate(AUTH_MESSAGE.NO_PERMISSION),
+        );
+        return false;
+      }
+    }
+    request['user'] = user;
+
     return true;
   }
 

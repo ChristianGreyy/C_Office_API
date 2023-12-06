@@ -21,7 +21,7 @@ export class NodemailerService {
   }
 
   private setupTemplates() {
-    const viewsPath = path.resolve(__dirname, '../../../src/views'); // Specify the path to your email templates
+    const viewsPath = path.resolve(__dirname, '../../../../src/views');
 
     this.transporter.use(
       'compile',

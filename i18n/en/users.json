@@ -6,5 +6,6 @@
   "USER_NOT_FOUND": "the user not found",
   "INVALID_PASSWORD": "password must contain at least 8 characters, 1 number and 1 uppercase letter",
   "PASSWORD_NOT_MATCH": "confirm password does not match the password",
-  "EMAIL_EXISTED": "this email is already registered with another user"
+  "EMAIL_EXISTED": "this email is already registered with another user",
+  "PHONE_EXISTED": "this phone is already registered with another user"
 }

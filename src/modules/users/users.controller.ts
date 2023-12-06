@@ -50,6 +50,20 @@ export class UsersController {
     };
   }
 
+  @Post('staffs')
+  @UseGuards(AuthGuard)
+  @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.CREATE_USER)
+  async createStaff(@Body() createUserDto: CreateUserDto): Promise<{
+    message: string;
+    data: User;
+  }> {
+    return {
+      message: this.localesService.translate(USER_MESSAGE.CREATE_USER_SUCCESS),
+      data: await this.usersService.createStaff(createUserDto),
+    };
+  }
+
   @Put(':userId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
