@@ -91,7 +91,7 @@ export class RolesController {
 
   @Get()
   @UseGuards(AuthGuard)
-  @AuthDecorator([EUserRole.ADMIN, EUserRole.USER])
+  @AuthDecorator([EUserRole.ADMIN])
   @PermissionDecorator(EUserPermission.GET_ROLES)
   async getRoles(
     @Query() getRolesDto: GetRolesDto,

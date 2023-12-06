@@ -1,22 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
+import * as bcrypt from 'bcryptjs';
+import { EUserRole } from 'src/common/enums';
+import { MAIL_SUBJECT, MAIL_TEMPLATE, SALT_ROUNDS } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
 import { USER_MESSAGE } from 'src/messages';
 import { LocalesService } from '../locales/locales.service';
+import { NodemailerService } from '../nodemailer/nodemailer.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
-import * as bcrypt from 'bcryptjs';
-import { SALT_ROUNDS } from 'src/constants';
-import { EUserRole } from 'src/common/enums';
 
 @Injectable()
 export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
-    private localesService: LocalesService,
+    private readonly localesService: LocalesService,
+    private readonly nodemailerService: NodemailerService,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
@@ -31,14 +33,26 @@ export class UsersService {
         this.localesService.translate(USER_MESSAGE.CREATE_USER_FAIL),
       );
     }
-    const existedUser = await this.prisma.user.findUnique({
+    const existedUser = await this.prisma.user.findFirst({
       where: {
-        email: payload.email,
+        OR: [
+          {
+            email: payload.email,
+          },
+          {
+            phone: payload.phone,
+          },
+        ],
       },
     });
-    if (existedUser) {
+    if (existedUser && existedUser.email === payload.email) {
       ErrorHelper.BadRequestException(
         this.localesService.translate(USER_MESSAGE.EMAIL_EXISTED),
+      );
+    }
+    if (existedUser && existedUser.phone === payload.phone) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(USER_MESSAGE.PHONE_EXISTED),
       );
     }
     if (confirmPassword !== payload.password) {
@@ -52,6 +66,65 @@ export class UsersService {
         ...payload,
         password: hashPassword,
         roleId: role.id,
+      },
+    });
+    return user;
+  }
+
+  async createStaff(createUserDto: CreateUserDto): Promise<User> {
+    const { confirmPassword, ...payload } = createUserDto;
+    const role = await this.prisma.role.findUnique({
+      where: {
+        name: EUserRole.STAFF,
+      },
+    });
+    if (!role) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(USER_MESSAGE.CREATE_USER_FAIL),
+      );
+    }
+    const existedUser = await this.prisma.user.findFirst({
+      where: {
+        OR: [
+          {
+            email: payload.email,
+          },
+          {
+            phone: payload.phone,
+          },
+        ],
+      },
+    });
+    if (existedUser && existedUser.email === payload.email) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(USER_MESSAGE.EMAIL_EXISTED),
+      );
+    }
+    if (existedUser && existedUser.phone === payload.phone) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(USER_MESSAGE.PHONE_EXISTED),
+      );
+    }
+    if (confirmPassword !== payload.password) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(USER_MESSAGE.PASSWORD_NOT_MATCH),
+      );
+    }
+    const hashPassword = await bcrypt.hash(payload.password, SALT_ROUNDS);
+    const user = await this.prisma.user.create({
+      data: {
+        ...payload,
+        password: hashPassword,
+        roleId: role.id,
+      },
+    });
+    await this.nodemailerService.sendMail({
+      to: user.email,
+      subject: MAIL_SUBJECT.STAFF_ACCOUNT,
+      template: MAIL_TEMPLATE.STAFF_ACCOUNT,
+      context: {
+        email: `${payload.email}`,
+        password: `${payload.password}`,
       },
     });
     return user;

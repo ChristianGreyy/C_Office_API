@@ -66,7 +66,9 @@ export class AuthService {
 
   async forgotPassword({ email }: ForgotPasswordDto): Promise<string> {
     const user = await this.usersService.findOne({
-      email,
+      where: {
+        email,
+      }
     });
     if (!user) {
       ErrorHelper.BadRequestException(
