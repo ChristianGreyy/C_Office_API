@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
 import { EUserRole } from 'src/common/enums';
-import { MAIL_SUBJECT, MAIL_TEMPLATE, SALT_ROUNDS } from 'src/constants';
+import { LIMIT_DEFAULT, MAIL_SUBJECT, MAIL_TEMPLATE, SALT_ROUNDS } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
 import { USER_MESSAGE } from 'src/messages';
@@ -187,19 +187,14 @@ export class UsersService {
   }
 
   async getUsers(query: GetUsersDto): Promise<IPagination<User>> {
-    const { limit, offset, startingId, status } = query;
+    const { limit = LIMIT_DEFAULT, page } = query;
+    const offset = (page - 1) * limit;
     const searchQuery = {};
-    if (status) {
-      searchQuery['status'] = status;
-    }
     const [total, items] = await this.prisma.$transaction([
       this.prisma.user.count(),
       this.prisma.user.findMany({
         take: limit,
         skip: offset,
-        cursor: {
-          id: startingId ?? 1,
-        },
         where: {
           ...searchQuery,
         },
@@ -207,6 +202,8 @@ export class UsersService {
     ]);
 
     return {
+      page,
+      limit,
       total,
       items,
     };

@@ -8,6 +8,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreatePermissionDto } from './dtos/create-permission.dto';
 import { GetPermissionsDto } from './dtos/get-permissions.dto';
 import { UpdatePermissionDto } from './dtos/update-permission.dto';
+import { LIMIT_DEFAULT } from 'src/constants';
 
 @Injectable()
 export class PermissionsService {
@@ -99,16 +100,14 @@ export class PermissionsService {
   async getPermissions(
     query: GetPermissionsDto,
   ): Promise<IPagination<Permission>> {
-    const { limit, offset, startingId } = query;
+    const { limit = LIMIT_DEFAULT, page } = query;
+    const offset = (page - 1) * limit;
     const searchQuery = {};
     const [total, items] = await this.prisma.$transaction([
       this.prisma.permission.count(),
       this.prisma.permission.findMany({
         take: limit,
         skip: offset,
-        cursor: {
-          id: startingId ?? 1,
-        },
         where: {
           ...searchQuery,
         },
@@ -116,6 +115,8 @@ export class PermissionsService {
     ]);
 
     return {
+      page,
+      limit,
       total,
       items,
     };
