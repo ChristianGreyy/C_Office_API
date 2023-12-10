@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from '@prisma/client';
+import { LIMIT_DEFAULT } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
 import { PERMISSION_MESSAGE, ROLE_MESSAGE } from 'src/messages';
@@ -35,9 +36,7 @@ export class RolesService {
     }
     const role = await this.prisma.role.findFirst({
       where: {
-        name: {
-          contains: payload.name,
-        },
+        name: payload.name,
       },
     });
     if (role) {
@@ -110,16 +109,14 @@ export class RolesService {
   }
 
   async getRoles(query: GetRolesDto): Promise<IPagination<Role>> {
-    const { limit, offset, startingId } = query;
+    const { limit = LIMIT_DEFAULT, page } = query;
+    const offset = (page - 1) * limit;
     const searchQuery = {};
     const [total, items] = await this.prisma.$transaction([
       this.prisma.role.count(),
       this.prisma.role.findMany({
         take: limit,
         skip: offset,
-        cursor: {
-          id: startingId ?? 1,
-        },
         where: {
           ...searchQuery,
         },
@@ -127,6 +124,8 @@ export class RolesService {
     ]);
 
     return {
+      page,
+      limit,
       total,
       items,
     };

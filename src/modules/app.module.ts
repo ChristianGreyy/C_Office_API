@@ -3,6 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { LocalesModule } from './locales/locales.module';
 import { NodemailerModule } from './nodemailer/nodemailer.module';
 import { PermissionsModule } from './permissions/permissions.module';
+import { PositionsModule } from './positions/positions.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
@@ -16,6 +17,7 @@ import { UsersModule } from './users/users.module';
     PermissionsModule,
     UsersModule,
     RolesModule,
+    PositionsModule,
   ],
 })
 export class AppModule {}

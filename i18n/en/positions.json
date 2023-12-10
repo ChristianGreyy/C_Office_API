@@ -1,0 +1,7 @@
+{
+  "CREATE_POSITION_SUCCESS": "create position successfully",
+  "UPDATE_POSITION_SUCCESS": "update position successfully",
+  "DELETE_POSITION_SUCCESS": "delete position successfully",
+  "POSITION_NOT_FOUND": "the position not found",
+  "POSITION_EXISTED": "the position already exists"
+}

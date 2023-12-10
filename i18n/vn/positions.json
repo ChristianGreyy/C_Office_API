@@ -1,0 +1,7 @@
+{
+  "CREATE_POSITION_SUCCESS": "tạo vị trí thành công",
+  "UPDATE_POSITION_SUCCESS": "cập nhật vị trí thành công",
+  "DELETE_POSITION_SUCCESS": "xóa vị trí thành công",
+  "POSITION_NOT_FOUND": "vị trí không tồn tại",
+  "POSITION_EXISTED": "vị trí này đã tồn tại"
+}

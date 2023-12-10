@@ -34,6 +34,8 @@ model User {
   updatedAt    DateTime     @updatedAt @map("updated_at")
   role         Role?        @relation(fields: [roleId], references: [id])
   roleId       Int?
+  Position     Position?    @relation(fields: [positionId], references: [id])
+  positionId   Int?
 }
 
 model Role {
@@ -47,9 +49,18 @@ model Role {
 
 model Permission {
   id        Int      @id @default(autoincrement())
-  module    String?   @db.VarChar(30)
-  name      String?   @db.VarChar(30)
-  slug      String?   @db.VarChar(30)
+  module    String?  @db.VarChar(30)
+  name      String?  @db.VarChar(30)
+  slug      String?  @db.VarChar(30)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Position {
+  id        Int      @id @default(autoincrement())
+  name      String?  @db.VarChar(30)
+  color     String?  @db.VarChar(30)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  users     User[]
 }
