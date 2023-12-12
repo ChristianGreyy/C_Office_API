@@ -1,0 +1,7 @@
+{
+  "CREATE_LEVEL_SUCCESS": "tạo cấp độ thành công",
+  "UPDATE_LEVEL_SUCCESS": "cập nhật cấp độ thành công",
+  "DELETE_LEVEL_SUCCESS": "xóa cấp độ thành công",
+  "LEVEL_NOT_FOUND": "cấp độ không tồn tại",
+  "LEVEL_EXISTED": "cấp độ này đã tồn tại"
+}

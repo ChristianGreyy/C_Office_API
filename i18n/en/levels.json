@@ -1,0 +1,7 @@
+{
+  "CREATE_LEVEL_SUCCESS": "create level successfully",
+  "UPDATE_LEVEL_SUCCESS": "update level successfully",
+  "DELETE_LEVEL_SUCCESS": "delete level successfully",
+  "LEVEL_NOT_FOUND": "the level not found",
+  "LEVEL_EXISTED": "the level already exists"
+}
