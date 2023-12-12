@@ -29,4 +29,10 @@ export const enum EUserPermission {
   GET_POSITION = 'get_position',
   UPDATE_POSITION = 'update_position',
   DELETE_POSITION = 'delete_position',
+  // levels
+  CREATE_LEVEL = 'create_level',
+  GET_LEVELS = 'get_levels',
+  GET_LEVEL = 'get_level',
+  UPDATE_LEVEL = 'update_level',
+  DELETE_LEVEL = 'delete_level',
 }

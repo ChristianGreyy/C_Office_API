@@ -36,6 +36,8 @@ model User {
   roleId       Int?
   Position     Position?    @relation(fields: [positionId], references: [id])
   positionId   Int?
+  Level        Level?       @relation(fields: [levelId], references: [id])
+  levelId      Int?
 }
 
 model Role {
@@ -57,6 +59,15 @@ model Permission {
 }
 
 model Position {
+  id        Int      @id @default(autoincrement())
+  name      String?  @db.VarChar(30)
+  color     String?  @db.VarChar(30)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  users     User[]
+}
+
+model Level {
   id        Int      @id @default(autoincrement())
   name      String?  @db.VarChar(30)
   color     String?  @db.VarChar(30)

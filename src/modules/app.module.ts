@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
+import { LevelsModule } from './levels/levels.module';
 import { LocalesModule } from './locales/locales.module';
 import { NodemailerModule } from './nodemailer/nodemailer.module';
 import { PermissionsModule } from './permissions/permissions.module';
@@ -18,6 +19,7 @@ import { UsersModule } from './users/users.module';
     UsersModule,
     RolesModule,
     PositionsModule,
+    LevelsModule,
   ],
 })
 export class AppModule {}
