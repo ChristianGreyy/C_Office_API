@@ -7,6 +7,7 @@ import { NodemailerModule } from './modules/nodemailer/nodemailer.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
 import { RolesModule } from './modules/roles/roles.module';
 import { UsersModule } from './modules/users/users.module';
+import { UniversitiesModule } from './modules/universities/universities.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UsersModule } from './modules/users/users.module';
     PermissionsModule,
     UsersModule,
     RolesModule,
+    UniversitiesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

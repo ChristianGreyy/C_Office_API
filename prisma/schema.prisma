@@ -38,6 +38,8 @@ model User {
   positionId   Int?
   Level        Level?       @relation(fields: [levelId], references: [id])
   levelId      Int?
+  University   University?  @relation(fields: [universityId], references: [id])
+  universityId Int?
 }
 
 model Role {
@@ -74,4 +76,13 @@ model Level {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   users     User[]
+}
+
+model University {
+  id              Int      @id @default(autoincrement())
+  name            String?  @db.VarChar(30)
+  color           String?  @db.VarChar(30)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+  users           User[]
 }

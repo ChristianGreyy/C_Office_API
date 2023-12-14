@@ -35,4 +35,10 @@ export const enum EUserPermission {
   GET_LEVEL = 'get_level',
   UPDATE_LEVEL = 'update_level',
   DELETE_LEVEL = 'delete_level',
+  // levels
+  CREATE_UNIVERSITY = 'create_university',
+  GET_UNIVERSITIES = 'get_universities',
+  GET_UNIVERSITY = 'get_university',
+  UPDATE_UNIVERSITY = 'update_university',
+  DELETE_UNIVERSITY = 'delete_university',
 }

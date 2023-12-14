@@ -1,0 +1,7 @@
+{
+  "CREATE_UNIVERSITY_SUCCESS": "create university successfully",
+  "UPDATE_UNIVERSITY_SUCCESS": "update university successfully",
+  "DELETE_UNIVERSITY_SUCCESS": "delete university successfully",
+  "UNIVERSITY_NOT_FOUND": "the university not found",
+  "UNIVERSITY_EXISTED": "the university already exists"
+}
