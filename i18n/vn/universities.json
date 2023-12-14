@@ -1,0 +1,7 @@
+{
+  "CREATE_UNIVERSITY_SUCCESS": "tạo trường đại học thành công",
+  "UPDATE_UNIVERSITY_SUCCESS": "cập nhật trường đại học thành công",
+  "DELETE_UNIVERSITY_SUCCESS": "xóa trường đại học thành công",
+  "UNIVERSITY_NOT_FOUND": "trường đại học không tồn tại",
+  "UNIVERSITY_EXISTED": "trường đại học này đã tồn tại"
+}

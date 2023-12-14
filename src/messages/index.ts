@@ -3,4 +3,6 @@ export * from './level.message';
 export * from './permission.message';
 export * from './positions.message';
 export * from './roles.message';
+export * from './universities.message';
 export * from './users.message';
+

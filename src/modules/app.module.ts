@@ -8,6 +8,7 @@ import { PositionsModule } from './positions/positions.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
+import { UniversitiesModule } from './universities/universities.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { UsersModule } from './users/users.module';
     RolesModule,
     PositionsModule,
     LevelsModule,
+    UniversitiesModule
   ],
 })
 export class AppModule {}
