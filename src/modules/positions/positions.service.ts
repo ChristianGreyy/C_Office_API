@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Position } from '@prisma/client';
-import { LIMIT_DEFAULT } from 'src/constants';
+import { LIMIT_DEFAULT, PAGE_DEFAULT } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
 import { POSITION_MESSAGE } from 'src/messages';
@@ -98,7 +98,7 @@ export class PositionsService {
   }
 
   async getPositions(query: GetPositionsDto): Promise<IPagination<Position>> {
-    const { limit = LIMIT_DEFAULT, page } = query;
+    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT } = query;
     const offset = (page - 1) * limit;
     const searchQuery = {};
     const [total, items] = await this.prisma.$transaction([
