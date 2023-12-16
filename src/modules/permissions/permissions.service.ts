@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Permission } from '@prisma/client';
+import { Permission } from '@prisma/client';
+import { LIMIT_DEFAULT, PAGE_DEFAULT } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
 import { PERMISSION_MESSAGE } from 'src/messages';
@@ -8,7 +9,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreatePermissionDto } from './dtos/create-permission.dto';
 import { GetPermissionsDto } from './dtos/get-permissions.dto';
 import { UpdatePermissionDto } from './dtos/update-permission.dto';
-import { LIMIT_DEFAULT } from 'src/constants';
 
 @Injectable()
 export class PermissionsService {
@@ -100,7 +100,7 @@ export class PermissionsService {
   async getPermissions(
     query: GetPermissionsDto,
   ): Promise<IPagination<Permission>> {
-    const { limit = LIMIT_DEFAULT, page } = query;
+    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT } = query;
     const offset = (page - 1) * limit;
     const searchQuery = {};
     const [total, items] = await this.prisma.$transaction([

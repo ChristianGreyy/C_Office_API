@@ -2,7 +2,9 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEnum,
+  IsInt,
   IsNotEmpty,
+  IsOptional,
   Matches,
   MaxLength,
 } from 'class-validator';
@@ -75,4 +77,34 @@ export class UpdateUserDto {
     required: true,
   })
   status = EUserStatus.ACTIVE;
+
+  @IsInt()
+  @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
+  @IsOptional()
+  @ApiProperty({
+    name: 'positionId',
+    type: String,
+    required: true,
+  })
+  positionId: number;
+
+  @IsInt()
+  @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
+  @IsOptional()
+  @ApiProperty({
+    name: 'universityId',
+    type: String,
+    required: true,
+  })
+  universityId: number;
+
+  @IsInt()
+  @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
+  @IsOptional()
+  @ApiProperty({
+    name: 'levelId',
+    type: String,
+    required: true,
+  })
+  levelId: number;
 }
