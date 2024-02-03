@@ -5,6 +5,7 @@ import { LocalesModule } from './locales/locales.module';
 import { NodemailerModule } from './nodemailer/nodemailer.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { PositionsModule } from './positions/positions.module';
+import { PrioritiesModule } from './priorities/priorities.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RolesModule } from './roles/roles.module';
 import { TrackersModule } from './trackers/trackers.module';
@@ -24,6 +25,7 @@ import { UsersModule } from './users/users.module';
     LevelsModule,
     UniversitiesModule,
     TrackersModule,
+    PrioritiesModule,
   ],
 })
 export class AppModule {}

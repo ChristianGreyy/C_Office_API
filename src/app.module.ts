@@ -5,9 +5,10 @@ import { AuthModule } from './modules/auth/auth.module';
 import { LocalesModule } from './modules/locales/locales.module';
 import { NodemailerModule } from './modules/nodemailer/nodemailer.module';
 import { PermissionsModule } from './modules/permissions/permissions.module';
+import { PrioritiesModule } from './modules/priorities/priorities.module';
 import { RolesModule } from './modules/roles/roles.module';
-import { UsersModule } from './modules/users/users.module';
 import { UniversitiesModule } from './modules/universities/universities.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UniversitiesModule } from './modules/universities/universities.module';
     UsersModule,
     RolesModule,
     UniversitiesModule,
+    PrioritiesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
