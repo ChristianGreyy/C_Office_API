@@ -86,3 +86,11 @@ model University {
   updatedAt       DateTime @updatedAt @map("updated_at")
   users           User[]
 }
+
+model Tracker {
+  id              Int      @id @default(autoincrement())
+  name            String?  @db.VarChar(30)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+}
+

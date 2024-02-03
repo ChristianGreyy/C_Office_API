@@ -7,8 +7,9 @@ import { PermissionsModule } from './permissions/permissions.module';
 import { PositionsModule } from './positions/positions.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { RolesModule } from './roles/roles.module';
-import { UsersModule } from './users/users.module';
+import { TrackersModule } from './trackers/trackers.module';
 import { UniversitiesModule } from './universities/universities.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { UniversitiesModule } from './universities/universities.module';
     RolesModule,
     PositionsModule,
     LevelsModule,
-    UniversitiesModule
+    UniversitiesModule,
+    TrackersModule,
   ],
 })
 export class AppModule {}

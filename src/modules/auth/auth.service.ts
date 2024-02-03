@@ -20,7 +20,7 @@ import {
   SALT_ROUNDS,
 } from 'src/constants';
 import * as moment from 'moment';
-import { EMomentFormat, EMomentUnit } from 'src/common/enums';
+import { EMomentFormat, EMomentUnit } from '../../common/enums';
 import { ResetPasswordDto } from './dtos/reset-password.dto';
 import { USER_MESSAGE } from 'src/messages';
 import { ChangePasswordDto } from './dtos/change-password.dto';

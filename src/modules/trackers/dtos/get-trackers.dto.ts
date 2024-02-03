@@ -1,3 +1,3 @@
 import { PaginationParamsDto } from '../../../common/dto';
 
-export class GetPositionsDto extends PaginationParamsDto {}
+export class GetTrackersDto extends PaginationParamsDto {}

@@ -11,10 +11,10 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiHeader, ApiTags } from '@nestjs/swagger';
 import { University } from '@prisma/client';
-import { AuthDecorator } from 'src/common/decorators/auth.decorator';
-import { PermissionDecorator } from 'src/common/decorators/permission.decorator';
-import { EUserPermission, EUserRole } from 'src/common/enums';
-import { AuthGuard } from 'src/common/guards/auth.guard';
+import { AuthDecorator } from '../../common/decorators/auth.decorator';
+import { PermissionDecorator } from '../../common/decorators/permission.decorator';
+import { EUserPermission, EUserRole } from '../../common/enums';
+import { AuthGuard } from '../../common/guards/auth.guard';
 import { IPagination } from 'src/interfaces/response.interface';
 import { UNIVERSITY_MESSAGE } from 'src/messages';
 import { LocalesService } from '../locales/locales.service';

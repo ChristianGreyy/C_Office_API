@@ -1,3 +1,3 @@
-import { PaginationParamsDto } from 'src/common/dto';
+import { PaginationParamsDto } from '../../../common/dto';
 
 export class GetLevelsDto extends PaginationParamsDto {}
