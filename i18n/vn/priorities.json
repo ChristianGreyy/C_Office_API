@@ -1,0 +1,7 @@
+{
+  "CREATE_PRIORITY_SUCCESS": "tạo độ ưu tiên thành công",
+  "UPDATE_PRIORITY_SUCCESS": "cập nhật độ ưu tiên thành công",
+  "DELETE_PRIORITY_SUCCESS": "xóa độ ưu tiên thành công",
+  "PRIORITY_NOT_FOUND": "độ ưu tiên không tồn tại",
+  "PRIORITY_EXISTED": "độ ưu tiên này đã tồn tại"
+}

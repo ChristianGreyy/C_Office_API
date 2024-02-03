@@ -47,4 +47,10 @@ export const enum EUserPermission {
   GET_TRACKER = 'get_tracker',
   UPDATE_TRACKER = 'update_tracker',
   DELETE_TRACKER = 'delete_tracker',
+  // priorities
+  CREATE_PRIORITY = 'create_priority',
+  GET_PRIORITIES = 'get_priorities',
+  GET_PRIORITY = 'get_priority',
+  UPDATE_PRIORITY = 'update_priority',
+  DELETE_PRIORITY = 'delete_priority',
 }

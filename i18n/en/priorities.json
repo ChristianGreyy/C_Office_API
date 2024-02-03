@@ -1,0 +1,7 @@
+{
+  "CREATE_PRIORITY_SUCCESS": "create priority successfully",
+  "UPDATE_PRIORITY_SUCCESS": "update priority successfully",
+  "DELETE_PRIORITY_SUCCESS": "delete priority successfully",
+  "PRIORITY_NOT_FOUND": "the priority not found",
+  "PRIORITY_EXISTED": "the priority already exists"
+}
