@@ -1,0 +1,7 @@
+{
+  "CREATE_TRACKER_SUCCESS": "create tracker successfully",
+  "UPDATE_TRACKER_SUCCESS": "update tracker successfully",
+  "DELETE_TRACKER_SUCCESS": "delete tracker successfully",
+  "TRACKER_NOT_FOUND": "the tracker not found",
+  "TRACKER_EXISTED": "the tracker already exists"
+}

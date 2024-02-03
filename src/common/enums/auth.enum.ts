@@ -41,4 +41,10 @@ export const enum EUserPermission {
   GET_UNIVERSITY = 'get_university',
   UPDATE_UNIVERSITY = 'update_university',
   DELETE_UNIVERSITY = 'delete_university',
+  // trackers
+  CREATE_TRACKER = 'create_tracker',
+  GET_TRACKERS = 'get_trackers',
+  GET_TRACKER = 'get_tracker',
+  UPDATE_TRACKER = 'update_tracker',
+  DELETE_TRACKER = 'delete_tracker',
 }

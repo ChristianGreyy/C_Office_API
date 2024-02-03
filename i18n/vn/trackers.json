@@ -1,0 +1,7 @@
+{
+  "CREATE_TRACKER_SUCCESS": "tạo theo dõi thành công",
+  "UPDATE_TRACKER_SUCCESS": "cập nhật theo dõi thành công",
+  "DELETE_TRACKER_SUCCESS": "xóa theo dõi thành công",
+  "TRACKER_NOT_FOUND": "theo dõi không tồn tại",
+  "TRACKER_EXISTED": "theo dõi này đã tồn tại"
+}

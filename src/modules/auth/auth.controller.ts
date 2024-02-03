@@ -1,10 +1,10 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
-import { AuthDecorator } from 'src/common/decorators/auth.decorator';
-import { UserDecorator } from 'src/common/decorators/user.decorator';
-import { EUserRole } from 'src/common/enums';
-import { AuthGuard } from 'src/common/guards/auth.guard';
+import { AuthDecorator } from '../../common/decorators/auth.decorator';
+import { UserDecorator } from '../../common/decorators/user.decorator';
+import { EUserRole } from '../../common/enums';
+import { AuthGuard } from '../../common/guards/auth.guard';
 import { ILogin } from 'src/interfaces/auth.interface';
 import { AUTH_MESSAGE } from 'src/messages/auth.message';
 import { LocalesService } from '../locales/locales.service';

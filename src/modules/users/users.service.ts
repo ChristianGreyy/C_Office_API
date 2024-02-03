@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
-import { EUserRole } from 'src/common/enums';
+import { EUserRole } from '../../common/enums';
 import {
   LIMIT_DEFAULT,
   MAIL_SUBJECT,
@@ -261,6 +261,34 @@ export class UsersService {
   }
 
   async getUser(userId: number): Promise<User> {
+    const role = await this.prisma.role.findUnique({
+      where: {
+        name: EUserRole.USER,
+      },
+    });
+    if (!role) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
+      );
+    }
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: userId,
+        roleId: role.id,
+      },
+      include: {
+        role: true,
+      },
+    });
+    if (!user) {
+      ErrorHelper.NotFoundException(
+        this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
+      );
+    }
+    return user;
+  }
+
+  async getProfile(userId: number): Promise<User> {
     const role = await this.prisma.role.findUnique({
       where: {
         name: EUserRole.USER,
