@@ -1,0 +1,10 @@
+{
+  "CREATE_PROJECT_SUCCESS": "create project successfully",
+  "UPDATE_PROJECT_SUCCESS": "update project successfully",
+  "DELETE_PROJECT_SUCCESS": "delete project successfully",
+  "PROJECT_NOT_FOUND": "the project not found",
+  "PROJECT_EXISTED": "the project already exists",
+  "YOU_NOT_IN_PROJECT": "you are not in this project",
+  "UPDATE_MEMBERS_FAIL": "update members to the project failed",
+  "UPDATE_MEMBERS_SUCCESS": "update members to the project successfully"
+}

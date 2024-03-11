@@ -374,6 +374,11 @@ export class UsersService {
     return this.prisma.user.findFirst(args);
   }
 
+
+  async findMany(args: any): Promise<User[]> {
+    return this.prisma.user.findMany(args);
+  }
+
   async updateOne(args: any): Promise<User> {
     return this.prisma.user.update(args);
   }

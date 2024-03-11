@@ -1,0 +1,7 @@
+{
+  "CREATE_STATUS_SUCCESS": "tạo trạng thái thành công",
+  "UPDATE_STATUS_SUCCESS": "cập nhật trạng thái thành công",
+  "DELETE_STATUS_SUCCESS": "xóa trạng thái thành công",
+  "STATUS_NOT_FOUND": "trạng thái không tồn tại",
+  "STATUS_EXISTED": "trạng thái này đã tồn tại"
+}

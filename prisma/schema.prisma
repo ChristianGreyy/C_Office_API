@@ -17,29 +17,42 @@ enum EUserStatus {
 
 enum EUserRole {
   admin
+  staff
   user
+  manager
+}
+
+enum EUserProjectRole {
+  manager
+  qc
+  developer
+  tester
+  leader
+  sale
 }
 
 model User {
-  id           Int          @id @default(autoincrement())
-  email        String       @unique @db.VarChar(50)
-  phone        String?      @unique @db.VarChar(50)
-  password     String       @db.VarChar(100)
-  firstName    String?      @map("first_name") @db.VarChar(50)
-  lastName     String?      @map("last_name") @db.VarChar(50)
+  id           Int           @id @default(autoincrement())
+  email        String        @unique @db.VarChar(50)
+  phone        String?       @unique @db.VarChar(50)
+  password     String        @db.VarChar(100)
+  firstName    String?       @map("first_name") @db.VarChar(50)
+  lastName     String?       @map("last_name") @db.VarChar(50)
   status       EUserStatus?
-  checkInDate  DateTime?    @default(now()) @map("check_in_date")
-  checkOutDate DateTime?    @map("check_out_date")
-  createdAt    DateTime     @default(now()) @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
-  role         Role?        @relation(fields: [roleId], references: [id])
+  checkInDate  DateTime?     @default(now()) @map("check_in_date")
+  checkOutDate DateTime?     @map("check_out_date")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+  role         Role?         @relation(fields: [roleId], references: [id])
   roleId       Int?
-  Position     Position?    @relation(fields: [positionId], references: [id])
+  Position     Position?     @relation(fields: [positionId], references: [id])
   positionId   Int?
-  Level        Level?       @relation(fields: [levelId], references: [id])
+  Level        Level?        @relation(fields: [levelId], references: [id])
   levelId      Int?
-  University   University?  @relation(fields: [universityId], references: [id])
+  University   University?   @relation(fields: [universityId], references: [id])
   universityId Int?
+  issues       Issue[]
+  UserProject  UserProject[]
 }
 
 model Role {
@@ -79,25 +92,98 @@ model Level {
 }
 
 model University {
-  id              Int      @id @default(autoincrement())
-  name            String?  @db.VarChar(30)
-  color           String?  @db.VarChar(30)
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
-  users           User[]
+  id        Int      @id @default(autoincrement())
+  name      String?  @db.VarChar(30)
+  color     String?  @db.VarChar(30)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  users     User[]
 }
 
 model Tracker {
-  id              Int      @id @default(autoincrement())
-  name            String?  @db.VarChar(30)
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  id        Int      @id @default(autoincrement())
+  name      String?  @db.VarChar(30)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  issues    Issue[]
 }
 
 model Priority {
-  id              Int      @id @default(autoincrement())
-  name            String?  @db.VarChar(30)
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  id        Int      @id @default(autoincrement())
+  name      String?  @db.VarChar(30)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  issues    Issue[]
 }
 
+model Status {
+  id        Int      @id @default(autoincrement())
+  name      String?  @db.VarChar(30)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  issues    Issue[]
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String?  @db.VarChar(30)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  issues    Issue[]
+}
+
+model Sprint {
+  id        Int      @id @default(autoincrement())
+  name      String?  @db.VarChar(100)
+  slug      String?  @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  Project   Project? @relation(fields: [projectId], references: [id])
+  projectId Int?
+}
+
+model Project {
+  id          Int           @id @default(autoincrement())
+  name        String?       @db.VarChar(100)
+  sprints     Sprint[]
+  issues      Issue[]
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  UserProject UserProject[]
+}
+
+model UserProject {
+  id        Int      @id @default(autoincrement())
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    Int?
+  role      EUserProjectRole?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Issue {
+  id               Int       @id @default(autoincrement())
+  subject          String?   @db.VarChar(30)
+  input            String?   @db.Text
+  completedPercent Int?      @map("completed_percent") @db.Integer
+  startDate        DateTime? @map("start_date") @db.Date
+  dueDate          DateTime? @map("due_date") @db.Date
+  estimateTime     Int?      @map("estimate_time") @db.Integer
+  output           String?   @db.Text
+  createdAt        DateTime  @default(now()) @map("created_at")
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+  Assign           User?     @relation(fields: [assignId], references: [id])
+  assignId         Int?
+  Priority         Priority? @relation(fields: [priorityId], references: [id])
+  priorityId       Int?
+  Tracker          Tracker?  @relation(fields: [trackerId], references: [id])
+  trackerId        Int?
+  Status           Status?   @relation(fields: [statusId], references: [id])
+  statusId         Int?
+  Category         Category? @relation(fields: [categoryId], references: [id])
+  categoryId       Int?
+  Project          Project?  @relation(fields: [projectId], references: [id])
+  projectId        Int?
+}

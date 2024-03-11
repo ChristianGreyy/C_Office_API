@@ -1,0 +1,7 @@
+{
+  "CREATE_CATEGORY_SUCCESS": "create category successfully",
+  "UPDATE_CATEGORY_SUCCESS": "update category successfully",
+  "DELETE_CATEGORY_SUCCESS": "delete category successfully",
+  "CATEGORY_NOT_FOUND": "the category not found",
+  "CATEGORY_EXISTED": "the category already exists"
+}

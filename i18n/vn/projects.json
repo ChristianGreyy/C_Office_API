@@ -1,0 +1,10 @@
+{
+  "CREATE_PROJECT_SUCCESS": "tạo dự án thành công",
+  "UPDATE_PROJECT_SUCCESS": "cập nhật dự án thành công",
+  "DELETE_PROJECT_SUCCESS": "xóa dự án thành công",
+  "PROJECT_NOT_FOUND": "dự án không tồn tại",
+  "PROJECT_EXISTED": "dự án này đã tồn tại",
+  "YOU_NOT_IN_PROJECT": "bạn không ở trong dự án này",
+  "UPDATE_MEMBERS_FAIL": "cập nhật thành viên vào dự án thất bại",
+  "UPDATE_MEMBERS_SUCCESS": "cập nhật thành viên vào dự án thành công"
+}

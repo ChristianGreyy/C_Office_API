@@ -60,7 +60,8 @@ export class AuthGuard implements CanActivate {
     if (!user || !roles.includes(user?.['role']?.name)) {
       throw new UnauthorizedException();
     }
-    if (roles.length === 1 && roles[0] === EUserRole.ADMIN) {
+    // role admin
+    if (roles.length === 1 && roles.includes(EUserRole.ADMIN)) {
       const checkPermission = await this.permissionsService.findOne({
         where: {
           slug: permission,
@@ -68,7 +69,7 @@ export class AuthGuard implements CanActivate {
       });
       if (
         checkPermission &&
-        user?.['role']?.['permissionIds']?.includes(checkPermission.name)
+        user?.['role']?.['permissionIds']?.includes(checkPermission.id)
       ) {
         ErrorHelper.NotFoundException(
           this.localesService.translate(AUTH_MESSAGE.NO_PERMISSION),
