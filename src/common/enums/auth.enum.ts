@@ -2,6 +2,7 @@ export const enum EUserRole {
   USER = 'user',
   STAFF = 'staff',
   ADMIN = 'admin',
+  MANAGER = 'manager',
 }
 
 export const enum EUserPermission {
@@ -53,4 +54,16 @@ export const enum EUserPermission {
   GET_PRIORITY = 'get_priority',
   UPDATE_PRIORITY = 'update_priority',
   DELETE_PRIORITY = 'delete_priority',
+  // status
+  CREATE_STATUS = 'create_status',
+  GET_ALL_STATUS = 'get_all_status',
+  GET_STATUS = 'get_status',
+  UPDATE_STATUS = 'update_status',
+  DELETE_STATUS = 'delete_status',
+  // priorities
+  CREATE_CATEGORY = 'create_category',
+  GET_CATEGORIES = 'get_categories',
+  GET_CATEGORY = 'get_category',
+  UPDATE_CATEGORY = 'update_category',
+  DELETE_CATEGORY = 'delete_category',
 }

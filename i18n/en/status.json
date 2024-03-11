@@ -1,0 +1,7 @@
+{
+  "CREATE_STATUS_SUCCESS": "create status successfully",
+  "UPDATE_STATUS_SUCCESS": "update status successfully",
+  "DELETE_STATUS_SUCCESS": "delete status successfully",
+  "STATUS_NOT_FOUND": "the status not found",
+  "STATUS_EXISTED": "the status already exists"
+}

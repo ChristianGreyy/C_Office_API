@@ -98,7 +98,7 @@ export class UniversitiesController {
   }> {
     return {
       message: this.localesService.translate(
-        UNIVERSITY_MESSAGE.UPDATE_UNIVERSITY_SUCCESS,
+        UNIVERSITY_MESSAGE.DELETE_UNIVERSITY_SUCCESS,
       ),
       data: await this.universitiesService.deleteUniversity(positionId),
     };

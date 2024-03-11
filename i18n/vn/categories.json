@@ -1,0 +1,7 @@
+{
+  "CREATE_CATEGORY_SUCCESS": "tạo phân loại thành công",
+  "UPDATE_CATEGORY_SUCCESS": "cập nhật phân loại thành công",
+  "DELETE_CATEGORY_SUCCESS": "xóa phân loại thành công",
+  "CATEGORY_NOT_FOUND": "phân loại không tồn tại",
+  "CATEGORY_EXISTED": "phân loại này đã tồn tại"
+}
