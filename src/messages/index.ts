@@ -6,6 +6,7 @@ export * from './positions.message';
 export * from './priority.message';
 export * from './project.message';
 export * from './roles.message';
+export * from './sprints.message';
 export * from './status.message';
 export * from './tracker.message';
 export * from './universities.message';

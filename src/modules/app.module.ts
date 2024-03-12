@@ -10,6 +10,7 @@ import { PrioritiesModule } from './priorities/priorities.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { ProjectsModule } from './projects/projects.module';
 import { RolesModule } from './roles/roles.module';
+import { SprintsModule } from './sprints/sprints.module';
 import { StatusModule } from './status/status.module';
 import { TrackersModule } from './trackers/trackers.module';
 import { UniversitiesModule } from './universities/universities.module';
@@ -32,6 +33,7 @@ import { UsersModule } from './users/users.module';
     StatusModule,
     CategoriesModule,
     ProjectsModule,
+    SprintsModule,
   ],
 })
 export class AppModule {}
