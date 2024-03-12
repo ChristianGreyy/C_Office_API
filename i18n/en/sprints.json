@@ -1,0 +1,8 @@
+{
+  "CREATE_SPRINT_SUCCESS": "create sprint successfully",
+  "UPDATE_SPRINT_SUCCESS": "update sprint successfully",
+  "DELETE_SPRINT_SUCCESS": "delete sprint successfully",
+  "SPRINT_NOT_FOUND": "the sprint not found",
+  "SPRINT_EXISTED": "the sprint already exists",
+  "SPRINT_IDS_INVALID": "the sprint ids are invalid"
+}

@@ -1,0 +1,8 @@
+{
+  "CREATE_SPRINT_SUCCESS": "tạo sprint thành công",
+  "UPDATE_SPRINT_SUCCESS": "cập nhật sprint thành công",
+  "DELETE_SPRINT_SUCCESS": "xóa sprint thành công",
+  "SPRINT_NOT_FOUND": "sprint không tồn tại",
+  "SPRINT_EXISTED": "sprint này đã tồn tại",
+  "SPRINT_IDS_INVALID": "các id của sprint không hợp lệ"
+}

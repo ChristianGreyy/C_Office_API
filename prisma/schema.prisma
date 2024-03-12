@@ -135,7 +135,6 @@ model Category {
 model Sprint {
   id        Int      @id @default(autoincrement())
   name      String?  @db.VarChar(100)
-  slug      String?  @db.VarChar(100)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   Project   Project? @relation(fields: [projectId], references: [id])
