@@ -125,4 +125,12 @@ export class StatusService {
   async updateOne(args: any): Promise<Status> {
     return this.prisma.status.update(args);
   }
+
+  async findById(id: number): Promise<Status> {
+    return this.prisma.status.findFirst({
+      where: {
+        id
+      }
+    });
+  }
 }

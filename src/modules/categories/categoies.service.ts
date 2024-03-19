@@ -125,4 +125,12 @@ export class CategoriesService {
   async updateOne(args: any): Promise<Category> {
     return this.prisma.category.update(args);
   }
+
+  async findById(id: number): Promise<Category> {
+    return this.prisma.category.findFirst({
+      where: {
+        id
+      }
+    });
+  }
 }

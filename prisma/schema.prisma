@@ -173,16 +173,16 @@ model Issue {
   output           String?   @db.Text
   createdAt        DateTime  @default(now()) @map("created_at")
   updatedAt        DateTime  @updatedAt @map("updated_at")
-  Assign           User?     @relation(fields: [assignId], references: [id])
+  assign           User?     @relation(fields: [assignId], references: [id])
   assignId         Int?
-  Priority         Priority? @relation(fields: [priorityId], references: [id])
+  priority         Priority? @relation(fields: [priorityId], references: [id])
   priorityId       Int?
-  Tracker          Tracker?  @relation(fields: [trackerId], references: [id])
+  tracker          Tracker?  @relation(fields: [trackerId], references: [id])
   trackerId        Int?
-  Status           Status?   @relation(fields: [statusId], references: [id])
+  status           Status?   @relation(fields: [statusId], references: [id])
   statusId         Int?
-  Category         Category? @relation(fields: [categoryId], references: [id])
+  category         Category? @relation(fields: [categoryId], references: [id])
   categoryId       Int?
-  Project          Project?  @relation(fields: [projectId], references: [id])
+  project          Project?  @relation(fields: [projectId], references: [id])
   projectId        Int?
 }

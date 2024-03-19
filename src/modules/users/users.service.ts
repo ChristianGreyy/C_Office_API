@@ -382,4 +382,12 @@ export class UsersService {
   async updateOne(args: any): Promise<User> {
     return this.prisma.user.update(args);
   }
+
+  async findById(id: number): Promise<User> {
+    return this.prisma.user.findFirst({
+      where: {
+        id
+      }
+    });
+  }
 }
