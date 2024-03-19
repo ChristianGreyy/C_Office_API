@@ -216,8 +216,16 @@ export class ProjectsService {
     };
   }
 
+  async findById(id: number): Promise<Project> {
+    return this.prisma.project.findFirst({
+      where: {
+        id
+      }
+    });
+  }
+
   async findOne(args: any): Promise<Project> {
-    return this.prisma.project.findUnique(args);
+    return this.prisma.project.findFirst(args);
   }
 
   async updateOne(args: any): Promise<Project> {

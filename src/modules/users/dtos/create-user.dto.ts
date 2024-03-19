@@ -10,10 +10,13 @@ import {
 } from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
 import { PASSWORD_REGEX, PHONE_VN_REGEX } from 'src/constants';
-import { EUserStatus } from '../../../common/enums/users.enum';
+import { EUserGender, EUserStatus } from '../../../common/enums/users.enum';
 import { COMMON_MESSAGE, USER_MESSAGE } from 'src/messages';
 
 export class CreateUserDto {
+  @MaxLength(30, {
+    message: i18nValidationMessage(COMMON_MESSAGE.MAX),
+  })
   @IsEmail({}, { message: i18nValidationMessage(COMMON_MESSAGE.INVALID_EMAIL) })
   @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
   @ApiProperty({
@@ -23,6 +26,9 @@ export class CreateUserDto {
   })
   email: string;
 
+  @MaxLength(30, {
+    message: i18nValidationMessage(COMMON_MESSAGE.MAX),
+  })
   @Matches(PHONE_VN_REGEX, {
     message: i18nValidationMessage(COMMON_MESSAGE.INVALID_PHONE),
   })
@@ -34,6 +40,9 @@ export class CreateUserDto {
   })
   phone: string;
 
+  @MaxLength(30, {
+    message: i18nValidationMessage(COMMON_MESSAGE.MAX),
+  })
   @Matches(PASSWORD_REGEX, {
     message: i18nValidationMessage('users.INVALID_PASSWORD'),
   })
@@ -45,6 +54,9 @@ export class CreateUserDto {
   })
   password: string;
 
+  @MaxLength(30, {
+    message: i18nValidationMessage(COMMON_MESSAGE.MAX),
+  })
   @Matches(PASSWORD_REGEX, {
     message: i18nValidationMessage(USER_MESSAGE.INVALID_PASSWORD),
   })
@@ -78,6 +90,9 @@ export class CreateUserDto {
   })
   lastName: string;
 
+  @MaxLength(30, {
+    message: i18nValidationMessage(COMMON_MESSAGE.MAX),
+  })
   @IsEnum(EUserStatus, {
     message: i18nValidationMessage(COMMON_MESSAGE.INVALID),
   })
@@ -88,6 +103,17 @@ export class CreateUserDto {
     required: true,
   })
   status = EUserStatus.ACTIVE;
+
+  @IsEnum(EUserGender, {
+    message: i18nValidationMessage(COMMON_MESSAGE.INVALID),
+  })
+  @ApiProperty({
+    enum: EUserGender,
+    name: 'Gender',
+    type: String,
+    required: true,
+  })
+  gender = EUserGender.MALE
 
   @IsInt()
   @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })

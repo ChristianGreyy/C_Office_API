@@ -1,0 +1,6 @@
+{
+  "CREATE_ISSUE_SUCCESS": "tạo issue thành công",
+  "UPDATE_ISSUE_SUCCESS": "cập nhật issue thành công",
+  "DELETE_ISSUE_SUCCESS": "xóa issue thành công",
+  "ISSUE_NOT_FOUND": "issue không tồn tại"
+}

@@ -1,0 +1,6 @@
+{
+  "CREATE_ISSUE_SUCCESS": "create issue successfully",
+  "UPDATE_ISSUE_SUCCESS": "update issue successfully",
+  "DELETE_ISSUE_SUCCESS": "delete issue successfully",
+  "ISSUE_NOT_FOUND": "the issue not found"
+}

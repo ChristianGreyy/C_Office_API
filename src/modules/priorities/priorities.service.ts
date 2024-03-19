@@ -120,6 +120,14 @@ export class PrioritiesService {
     };
   }
 
+  async findById(id: number): Promise<Priority> {
+    return this.prisma.priority.findFirst({
+      where: {
+        id
+      }
+    });
+  }
+
   async findOne(args: any): Promise<Priority> {
     return this.prisma.priority.findUnique(args);
   }
