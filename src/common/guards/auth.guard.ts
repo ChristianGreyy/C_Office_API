@@ -67,6 +67,8 @@ export class AuthGuard implements CanActivate {
           slug: permission,
         },
       });
+      console.log(user?.['role']?.['permissionIds'])
+      console.log(checkPermission.id)
       if (
         checkPermission &&
         user?.['role']?.['permissionIds']?.includes(checkPermission.id)

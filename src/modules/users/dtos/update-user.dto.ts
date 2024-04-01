@@ -9,7 +9,7 @@ import {
   MaxLength,
 } from 'class-validator';
 import { i18nValidationMessage } from 'nestjs-i18n';
-import { EUserStatus } from '../../../common/enums/users.enum';
+import { EUserGender, EUserStatus } from '../../../common/enums/users.enum';
 import { PASSWORD_REGEX, PHONE_VN_REGEX } from 'src/constants';
 import { COMMON_MESSAGE } from 'src/messages';
 
@@ -38,6 +38,7 @@ export class UpdateUserDto {
     message: i18nValidationMessage('users.INVALID_PASSWORD'),
   })
   @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
+  @IsOptional()
   @ApiProperty({
     name: 'password',
     type: String,
@@ -55,6 +56,18 @@ export class UpdateUserDto {
     required: true,
   })
   firstName: string;
+
+  @IsEnum(EUserGender, {
+    message: i18nValidationMessage(COMMON_MESSAGE.INVALID),
+  })
+  @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
+  @IsOptional()
+  @ApiProperty({
+    name: 'gender',
+    type: String,
+    required: true,
+  })
+  gender: EUserGender;
 
   @MaxLength(30, {
     message: i18nValidationMessage(COMMON_MESSAGE.MAX),
