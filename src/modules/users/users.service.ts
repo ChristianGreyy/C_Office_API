@@ -346,9 +346,31 @@ export class UsersService {
   }
 
   async getUsers(query: GetUsersDto): Promise<IPagination<User>> {
-    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT } = query;
+    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, search } = query;
     const offset = (page - 1) * limit;
     const searchQuery = {};
+    if(search) {
+      searchQuery['OR'] = [
+        {
+          email:  {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          firstName:  {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          lastName:  {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+      ]
+    }
     const [total, items] = await this.prisma.$transaction([
       this.prisma.user.count(),
       this.prisma.user.findMany({
@@ -381,5 +403,13 @@ export class UsersService {
 
   async updateOne(args: any): Promise<User> {
     return this.prisma.user.update(args);
+  }
+
+  async findById(id: number): Promise<User> {
+    return this.prisma.user.findFirst({
+      where: {
+        id
+      }
+    });
   }
 }

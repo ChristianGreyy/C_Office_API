@@ -127,4 +127,12 @@ export class TrackersService {
   async updateOne(args: any): Promise<Tracker> {
     return this.prisma.tracker.update(args);
   }
+
+  async findById(id: number): Promise<Tracker> {
+    return this.prisma.tracker.findFirst({
+      where: {
+        id
+      }
+    });
+  }
 }

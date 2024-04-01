@@ -1,4 +1,4 @@
-import { IsNumber, Min, IsOptional } from 'class-validator';
+import { IsNumber, Min, IsOptional, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class PaginationParamsDto {
@@ -25,4 +25,9 @@ export class PaginationParamsDto {
   @IsNumber()
   @Min(1)
   startingId?: number;
+
+  @IsOptional()
+  @Transform(({ value }) => value.trim())
+  @IsString()
+  search?: string;
 }
