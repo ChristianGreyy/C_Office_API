@@ -71,6 +71,8 @@ export class AuthGuard implements CanActivate {
         checkPermission &&
         user?.['role']?.['permissionIds']?.includes(checkPermission.id)
       ) {
+        return true;
+      } else {
         ErrorHelper.NotFoundException(
           this.localesService.translate(AUTH_MESSAGE.NO_PERMISSION),
         );
