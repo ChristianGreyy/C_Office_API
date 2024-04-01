@@ -14,9 +14,9 @@ export class LoginDto {
   })
   email: string;
 
-  @Matches(PASSWORD_REGEX, {
-    message: i18nValidationMessage('users.INVALID_PASSWORD'),
-  })
+  // @Matches(PASSWORD_REGEX, {
+  //   message: i18nValidationMessage('users.INVALID_PASSWORD'),
+  // })
   @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
   @ApiProperty({
     name: 'password',

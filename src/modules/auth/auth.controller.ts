@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { AuthDecorator } from '../../common/decorators/auth.decorator';
@@ -23,6 +23,7 @@ export class AuthController {
     private readonly localesService: LocalesService,
   ) {}
 
+  @HttpCode(200)
   @Post('login')
   async login(@Body() loginDto: LoginDto): Promise<{
     message: string;
