@@ -212,6 +212,21 @@ export class UsersService {
         this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
       );
     }
+    if(updateUserDto.phone) {
+      const checkPhoneNumber = await this.prisma.user.findFirst({
+        where: {
+          id: {
+            not: userId
+          },
+          phone: updateUserDto.phone
+        }
+      })
+      if(checkPhoneNumber) {
+        ErrorHelper.BadRequestException(
+          this.localesService.translate(USER_MESSAGE.PHONE_EXISTED),
+        );
+      }
+    }
     if (updateUserDto.levelId) {
       const level = await this.levelsService.findOne({
         where: {
@@ -250,8 +265,11 @@ export class UsersService {
         );
       }
     }
-    const hashPassword = await bcrypt.hash(updateUserDto.password, SALT_ROUNDS);
-    updateUserDto['password'] = hashPassword;
+    if(updateUserDto.password) {
+      const hashPassword = await bcrypt.hash(updateUserDto.password, SALT_ROUNDS);
+      updateUserDto['password'] = hashPassword;
+    }
+    console.log('updateUserDto', updateUserDto)
     return this.prisma.user.update({
       where: {
         id: userId,
@@ -348,28 +366,40 @@ export class UsersService {
   async getUsers(query: GetUsersDto): Promise<IPagination<User>> {
     const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, search } = query;
     const offset = (page - 1) * limit;
-    const searchQuery = {};
-    if(search) {
+    const role = await this.prisma.role.findUnique({
+      where: {
+        name: EUserRole.USER,
+      },
+    });
+    if (!role) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
+      );
+    }
+    const searchQuery = {
+      roleId: role.id,
+    };
+    if (search) {
       searchQuery['OR'] = [
         {
-          email:  {
+          email: {
             contains: search,
             mode: 'insensitive',
           },
         },
         {
-          firstName:  {
+          firstName: {
             contains: search,
             mode: 'insensitive',
           },
         },
         {
-          lastName:  {
+          lastName: {
             contains: search,
             mode: 'insensitive',
           },
         },
-      ]
+      ];
     }
     const [total, items] = await this.prisma.$transaction([
       this.prisma.user.count(),
@@ -396,7 +426,6 @@ export class UsersService {
     return this.prisma.user.findFirst(args);
   }
 
-
   async findMany(args: any): Promise<User[]> {
     return this.prisma.user.findMany(args);
   }
@@ -408,8 +437,8 @@ export class UsersService {
   async findById(id: number): Promise<User> {
     return this.prisma.user.findFirst({
       where: {
-        id
-      }
+        id,
+      },
     });
   }
 }
