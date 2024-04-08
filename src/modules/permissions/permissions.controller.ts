@@ -100,9 +100,7 @@ export class PermissionsController {
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN, EUserRole.USER])
   @PermissionDecorator(EUserPermission.GET_PERMISSIONS)
-  async getPermissions(
-    @Query() getPermissionsDto: GetPermissionsDto,
-  ): Promise<IPagination<Permission>> {
-    return this.permissionsService.getPermissions(getPermissionsDto);
+  async getPermissions(): Promise<Permission[]> {
+    return this.permissionsService.getPermissions();
   }
 }
