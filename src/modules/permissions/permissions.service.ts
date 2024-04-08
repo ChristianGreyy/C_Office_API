@@ -98,28 +98,21 @@ export class PermissionsService {
   }
 
   async getPermissions(
-    query: GetPermissionsDto,
-  ): Promise<IPagination<Permission>> {
-    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT } = query;
-    const offset = (page - 1) * limit;
-    const searchQuery = {};
-    const [total, items] = await this.prisma.$transaction([
-      this.prisma.permission.count(),
-      this.prisma.permission.findMany({
-        take: limit,
-        skip: offset,
-        where: {
-          ...searchQuery,
-        },
-      }),
-    ]);
-
-    return {
-      page,
-      limit,
-      total,
-      items,
-    };
+  ): Promise<Permission[]> {
+    const permisions = await this.prisma.permission.findMany();
+    const result = [];
+    for(const permission of permisions) {
+      const checkModule = result.findIndex(item => item.module === permission.module);
+      if(checkModule === -1) {
+        result.push({
+          module: permission.module,
+          permissions: [permission]
+        })
+      } else {
+        result[checkModule]['permissions'].push(permission);
+      }
+    }
+    return result;
   }
 
   async findOne(args: any): Promise<Permission> {
