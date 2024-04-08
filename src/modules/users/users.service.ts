@@ -8,6 +8,7 @@ import {
   MAIL_TEMPLATE,
   PAGE_DEFAULT,
   SALT_ROUNDS,
+  SORT_DEFAULT,
 } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
@@ -26,6 +27,7 @@ import { UniversitiesService } from '../universities/universities.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { CommonHelper } from 'src/helpers/common.helper';
 
 @Injectable()
 export class UsersService {
@@ -364,7 +366,7 @@ export class UsersService {
   }
 
   async getUsers(query: GetUsersDto): Promise<IPagination<User>> {
-    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, search } = query;
+    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, search, sort } = query;
     const offset = (page - 1) * limit;
     const role = await this.prisma.role.findUnique({
       where: {
@@ -401,6 +403,7 @@ export class UsersService {
         },
       ];
     }
+    const orderBy = sort ? CommonHelper.handleSort(sort) : SORT_DEFAULT;
     const [total, items] = await this.prisma.$transaction([
       this.prisma.user.count(),
       this.prisma.user.findMany({
@@ -412,6 +415,7 @@ export class UsersService {
         include: {
           role: true,
         },
+        orderBy
       }),
     ]);
 

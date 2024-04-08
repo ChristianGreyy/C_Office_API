@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Level } from '@prisma/client';
-import { LIMIT_DEFAULT, PAGE_DEFAULT } from 'src/constants';
+import { LIMIT_DEFAULT, PAGE_DEFAULT, SORT_DEFAULT } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
 import { POSITION_MESSAGE } from 'src/messages';
@@ -10,6 +10,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateLevelDto } from './dtos/create-level.dto';
 import { GetLevelsDto } from './dtos/get-level.dto';
 import { UpdateLevelDto } from './dtos/update-level.dto';
+import { CommonHelper } from 'src/helpers/common.helper';
 
 @Injectable()
 export class LevelsService {
@@ -95,9 +96,10 @@ export class LevelsService {
   }
 
   async getLevels(query: GetLevelsDto): Promise<IPagination<Level>> {
-    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT } = query;
+    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, sort } = query;
     const offset = (page - 1) * limit;
     const searchQuery = {};
+    const orderBy = sort ? CommonHelper.handleSort(sort) : SORT_DEFAULT;
     const [total, items] = await this.prisma.$transaction([
       this.prisma.level.count(),
       this.prisma.level.findMany({
@@ -106,6 +108,7 @@ export class LevelsService {
         where: {
           ...searchQuery,
         },
+        orderBy
       }),
     ]);
 

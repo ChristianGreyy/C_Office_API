@@ -37,6 +37,7 @@
     "crypto-js": "^4.2.0",
     "dotenv": "^16.3.1",
     "moment": "^2.29.4",
+    "morgan": "^1.10.0",
     "nestjs-i18n": "^10.3.7",
     "nodemailer": "^6.9.7",
     "nodemailer-express-handlebars": "^6.1.0",

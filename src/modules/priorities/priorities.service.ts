@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Priority } from '@prisma/client';
-import { LIMIT_DEFAULT, PAGE_DEFAULT } from 'src/constants';
+import { LIMIT_DEFAULT, PAGE_DEFAULT, SORT_DEFAULT } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
 import { PRIORITY_MESSAGE } from 'src/messages';
@@ -10,6 +10,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreatePriorityDto } from './dtos/create-priority.dto';
 import { GetPrioritiesDto } from './dtos/get-priorities.dto';
 import { UpdatePriorityDto } from './dtos/update-priority.dto';
+import { CommonHelper } from 'src/helpers/common.helper';
 
 @Injectable()
 export class PrioritiesService {
@@ -98,9 +99,10 @@ export class PrioritiesService {
   }
 
   async getPriorities(query: GetPrioritiesDto): Promise<IPagination<Priority>> {
-    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT } = query;
+    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, sort } = query;
     const offset = (page - 1) * limit;
     const searchQuery = {};
+    const orderBy = sort ? CommonHelper.handleSort(sort) : SORT_DEFAULT;
     const [total, items] = await this.prisma.$transaction([
       this.prisma.priority.count(),
       this.prisma.priority.findMany({
@@ -109,6 +111,7 @@ export class PrioritiesService {
         where: {
           ...searchQuery,
         },
+        orderBy
       }),
     ]);
 
