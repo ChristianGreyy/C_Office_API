@@ -52,12 +52,12 @@ export class CategoriesController {
     };
   }
 
-  @Put(':priorityId')
+  @Put(':categoryId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
   @PermissionDecorator(EUserPermission.UPDATE_CATEGORY)
   async updateCategory(
-    @Param('priorityId') priorityId: number,
+    @Param('categoryId') categoryId: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<{
     message: string;
@@ -68,27 +68,27 @@ export class CategoriesController {
         CATEGORY_MESSAGE.UPDATE_CATEGORY_SUCCESS,
       ),
       data: await this.categoriesService.updateCategory(
-        priorityId,
+        categoryId,
         updateCategoryDto,
       ),
     };
   }
 
-  @Get(':priorityId')
+  @Get(':categoryId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
   @PermissionDecorator(EUserPermission.GET_CATEGORY)
   async getCategory(
-    @Param('priorityId') priorityId: number,
+    @Param('categoryId') categoryId: number,
   ): Promise<Category> {
-    return this.categoriesService.getCategory(priorityId);
+    return this.categoriesService.getCategory(categoryId);
   }
 
-  @Delete(':priorityId')
+  @Delete(':categoryId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
   @PermissionDecorator(EUserPermission.DELETE_CATEGORY)
-  async deleteCategory(@Param('priorityId') priorityId: number): Promise<{
+  async deleteCategory(@Param('categoryId') categoryId: number): Promise<{
     message: string;
     data: Category;
   }> {
@@ -96,7 +96,7 @@ export class CategoriesController {
       message: this.localesService.translate(
         CATEGORY_MESSAGE.DELETE_CATEGORY_SUCCESS,
       ),
-      data: await this.categoriesService.deleteCategory(priorityId),
+      data: await this.categoriesService.deleteCategory(categoryId),
     };
   }
 
