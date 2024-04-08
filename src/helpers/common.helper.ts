@@ -35,4 +35,17 @@ export class CommonHelper {
     }
     return result;
   }
+
+  static handleSort(sort?: string): any {
+    if (!sort) return null;
+    const sortArr = sort.split(',');
+    const orderBy = [];
+    sortArr.forEach((item) => {
+      const [key, type] = item.split(':');
+      orderBy.push({
+        [key]: type
+      })
+    });
+    return orderBy;
+  }
 }

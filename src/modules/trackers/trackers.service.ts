@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Tracker } from '@prisma/client';
-import { LIMIT_DEFAULT, PAGE_DEFAULT } from 'src/constants';
+import { LIMIT_DEFAULT, PAGE_DEFAULT, SORT_DEFAULT } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
 import { TRACKER_MESSAGE } from 'src/messages';
@@ -10,6 +10,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateTrackerDto } from './dtos/create-tracker.dto';
 import { GetTrackersDto } from './dtos/get-trackers.dto';
 import { UpdateTrackerDto } from './dtos/update-tracker.dto';
+import { CommonHelper } from 'src/helpers/common.helper';
 
 @Injectable()
 export class TrackersService {
@@ -98,9 +99,10 @@ export class TrackersService {
   }
 
   async getTrackers(query: GetTrackersDto): Promise<IPagination<Tracker>> {
-    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT } = query;
+    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, sort } = query;
     const offset = (page - 1) * limit;
     const searchQuery = {};
+    const orderBy = sort ? CommonHelper.handleSort(sort) : SORT_DEFAULT;
     const [total, items] = await this.prisma.$transaction([
       this.prisma.tracker.count(),
       this.prisma.tracker.findMany({
@@ -109,6 +111,7 @@ export class TrackersService {
         where: {
           ...searchQuery,
         },
+        orderBy
       }),
     ]);
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Status } from '@prisma/client';
-import { LIMIT_DEFAULT, PAGE_DEFAULT } from 'src/constants';
+import { LIMIT_DEFAULT, PAGE_DEFAULT, SORT_DEFAULT } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
 import { PRIORITY_MESSAGE } from 'src/messages';
@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateStatusDto } from './dtos/create-status.dto';
 import { GetStatusDto } from './dtos/get-status.dto';
 import { UpdateStatusDto } from './dtos/update-status.dto';
+import { CommonHelper } from 'src/helpers/common.helper';
 
 @Injectable()
 export class StatusService {
@@ -96,9 +97,10 @@ export class StatusService {
   }
 
   async getAllStatus(query: GetStatusDto): Promise<IPagination<Status>> {
-    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT } = query;
+    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, sort } = query;
     const offset = (page - 1) * limit;
     const searchQuery = {};
+    const orderBy = sort ? CommonHelper.handleSort(sort) : SORT_DEFAULT;
     const [total, items] = await this.prisma.$transaction([
       this.prisma.status.count(),
       this.prisma.status.findMany({
@@ -107,6 +109,7 @@ export class StatusService {
         where: {
           ...searchQuery,
         },
+        orderBy
       }),
     ]);
 

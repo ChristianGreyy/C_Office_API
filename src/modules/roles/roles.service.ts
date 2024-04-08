@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from '@prisma/client';
-import { LIMIT_DEFAULT } from 'src/constants';
+import { LIMIT_DEFAULT, SORT_DEFAULT } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
 import { PERMISSION_MESSAGE, ROLE_MESSAGE } from 'src/messages';
@@ -10,6 +10,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateRoleDto } from './dtos/create-role.dto';
 import { GetRolesDto } from './dtos/get-roles.dto';
 import { UpdateRoleDto } from './dtos/update-role.dto';
+import { CommonHelper } from 'src/helpers/common.helper';
 
 @Injectable()
 export class RolesService {
@@ -109,9 +110,10 @@ export class RolesService {
   }
 
   async getRoles(query: GetRolesDto): Promise<IPagination<Role>> {
-    const { limit = LIMIT_DEFAULT, page } = query;
+    const { limit = LIMIT_DEFAULT, page, sort } = query;
     const offset = (page - 1) * limit;
     const searchQuery = {};
+    const orderBy = sort ? CommonHelper.handleSort(sort) : SORT_DEFAULT;
     const [total, items] = await this.prisma.$transaction([
       this.prisma.role.count(),
       this.prisma.role.findMany({
@@ -120,6 +122,7 @@ export class RolesService {
         where: {
           ...searchQuery,
         },
+        orderBy
       }),
     ]);
 

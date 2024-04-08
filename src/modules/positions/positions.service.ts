@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Position } from '@prisma/client';
-import { LIMIT_DEFAULT, PAGE_DEFAULT } from 'src/constants';
+import { LIMIT_DEFAULT, PAGE_DEFAULT, SORT_DEFAULT } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
 import { POSITION_MESSAGE } from 'src/messages';
@@ -10,6 +10,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreatePositionDto } from './dtos/create-position.dto';
 import { GetPositionsDto } from './dtos/get-position.dto';
 import { UpdatePositionDto } from './dtos/update-position.dto';
+import { CommonHelper } from 'src/helpers/common.helper';
 
 @Injectable()
 export class PositionsService {
@@ -98,9 +99,10 @@ export class PositionsService {
   }
 
   async getPositions(query: GetPositionsDto): Promise<IPagination<Position>> {
-    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT } = query;
+    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, sort } = query;
     const offset = (page - 1) * limit;
     const searchQuery = {};
+    const orderBy = sort ? CommonHelper.handleSort(sort) : SORT_DEFAULT;
     const [total, items] = await this.prisma.$transaction([
       this.prisma.position.count(),
       this.prisma.position.findMany({
@@ -109,6 +111,7 @@ export class PositionsService {
         where: {
           ...searchQuery,
         },
+        orderBy
       }),
     ]);
 
