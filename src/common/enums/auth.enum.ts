@@ -36,7 +36,7 @@ export const enum EUserPermission {
   GET_LEVEL = 'get_level',
   UPDATE_LEVEL = 'update_level',
   DELETE_LEVEL = 'delete_level',
-  // levels
+  // universities
   CREATE_UNIVERSITY = 'create_university',
   GET_UNIVERSITIES = 'get_universities',
   GET_UNIVERSITY = 'get_university',
@@ -60,7 +60,7 @@ export const enum EUserPermission {
   GET_STATUS = 'get_status',
   UPDATE_STATUS = 'update_status',
   DELETE_STATUS = 'delete_status',
-  // priorities
+  // categories
   CREATE_CATEGORY = 'create_category',
   GET_CATEGORIES = 'get_categories',
   GET_CATEGORY = 'get_category',
