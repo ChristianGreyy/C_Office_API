@@ -72,6 +72,25 @@ export class UsersController {
     return this.usersService.getProfile(userId);
   }
 
+
+  @Get('staffs/:userId')
+  @UseGuards(AuthGuard)
+  @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.GET_USER)
+  async getStaff(@Param('userId') userId: number): Promise<User> {
+    return this.usersService.getStaff(userId);
+  }
+
+  @Get('staffs')
+  @UseGuards(AuthGuard)
+  @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.GET_USERS)
+  async getStaffs(
+    @Query() getUsersDto: GetUsersDto,
+  ): Promise<IPagination<User>> {
+    return this.usersService.getStaffs(getUsersDto);
+  }
+
   @Put(':userId')
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN])
