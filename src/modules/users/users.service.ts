@@ -15,6 +15,7 @@ import { IPagination } from 'src/interfaces/response.interface';
 import {
   LEVEL_MESSAGE,
   POSITION_MESSAGE,
+  ROLE_MESSAGE,
   UNIVERSITY_MESSAGE,
   USER_MESSAGE,
 } from 'src/messages';
@@ -375,7 +376,7 @@ export class UsersService {
     });
     if (!role) {
       ErrorHelper.BadRequestException(
-        this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
+        this.localesService.translate(ROLE_MESSAGE.ROLE_NOT_FOUND),
       );
     }
     const searchQuery = {
@@ -426,6 +427,97 @@ export class UsersService {
       items,
     };
   }
+
+  async getStaff(userId: number): Promise<User> {
+    const role = await this.prisma.role.findUnique({
+      where: {
+        name: EUserRole.STAFF,
+      },
+    });
+    if (!role) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
+      );
+    }
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: userId,
+        roleId: role.id,
+      },
+      include: {
+        role: true,
+      },
+    });
+    if (!user) {
+      ErrorHelper.NotFoundException(
+        this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
+      );
+    }
+    return user;
+  }
+
+  async getStaffs(query: GetUsersDto): Promise<IPagination<User>> {
+    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, search, sort } = query;
+    const offset = (page - 1) * limit;
+    const role = await this.prisma.role.findUnique({
+      where: {
+        name: EUserRole.STAFF,
+      },
+    });
+    if (!role) {
+      ErrorHelper.BadRequestException(
+        this.localesService.translate(ROLE_MESSAGE.ROLE_NOT_FOUND),
+      );
+    }
+    const searchQuery = {
+      roleId: role.id,
+    };
+    if (search) {
+      searchQuery['OR'] = [
+        {
+          email: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          firstName: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          lastName: {
+            contains: search,
+            mode: 'insensitive',
+          },
+        },
+      ];
+    }
+    const orderBy = sort ? CommonHelper.handleSort(sort) : SORT_DEFAULT;
+    const [total, items] = await this.prisma.$transaction([
+      this.prisma.user.count(),
+      this.prisma.user.findMany({
+        take: limit,
+        skip: offset,
+        where: {
+          ...searchQuery,
+        },
+        include: {
+          role: true,
+        },
+        orderBy
+      }),
+    ]);
+
+    return {
+      page,
+      limit,
+      total,
+      items,
+    };
+  }
+
   async findOne(args: any): Promise<User> {
     return this.prisma.user.findFirst(args);
   }
