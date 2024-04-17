@@ -58,7 +58,8 @@ model User {
   University   University?   @relation(fields: [universityId], references: [id])
   universityId Int?
   issues       Issue[]
-  UserProject  UserProject[]
+  userProjects  UserProject[]
+  employeeAttendances  EmployeeAttendance[]
 }
 
 model Role {
@@ -191,4 +192,14 @@ model Issue {
   categoryId       Int?
   project          Project?  @relation(fields: [projectId], references: [id])
   projectId        Int?
+}
+
+model EmployeeAttendance {
+  id        Int               @id @default(autoincrement())
+  user      User?             @relation(fields: [userId], references: [id])
+  userId    Int?
+  checkInTime DateTime?
+  checkOutTime DateTime?
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @updatedAt @map("updated_at")
 }

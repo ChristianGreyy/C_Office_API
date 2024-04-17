@@ -1,0 +1,4 @@
+export const EMPLOYEE_ATTENDANCE_MESSAGE = {
+  CREATE_EMPLOYEE_ATTENDANCE_SUCCESS: 'employee-attendances.CREATE_EMPLOYEE_ATTENDANCE_SUCCESS' as never,
+  INVALID_CHECK_TIME: 'employee-attendances.INVALID_CHECK_TIME' as never,
+};
