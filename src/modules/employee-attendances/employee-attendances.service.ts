@@ -101,7 +101,7 @@ export class EmployeeAttendancesService {
         },
       },
     });
-    
+
     return employeeAttendance;
   }
 
@@ -131,6 +131,15 @@ export class EmployeeAttendancesService {
         skip: offset,
         where: {
           ...searchQuery,
+        },
+        include: {
+          user: {
+            select: {
+              email: true,
+              firstName: true,
+              lastName: true,
+            },
+          }
         },
       }),
     ]);
