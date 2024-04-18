@@ -4,8 +4,7 @@ import { EUserRole } from 'src/common/enums';
 import { LIMIT_DEFAULT, PAGE_DEFAULT } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
-import { CATEGORY_MESSAGE, PRIORITY_MESSAGE, PROJECT_MESSAGE, STATUS_MESSAGE, TRACKER_MESSAGE, USER_MESSAGE } from 'src/messages';
-import { CategoriesService } from '../categories/categoies.service';
+import { CATEGORY_MESSAGE, ISSUE_MESSAGE, PRIORITY_MESSAGE, PROJECT_MESSAGE, STATUS_MESSAGE, TRACKER_MESSAGE, USER_MESSAGE } from 'src/messages';
 import { LocalesService } from '../locales/locales.service';
 import { PrioritiesService } from '../priorities/priorities.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -28,7 +27,6 @@ export class IssuesService {
     private prioritiesService: PrioritiesService,
     private trackersService: TrackersService,
     private statusService: StatusService,
-    private categoriesService: CategoriesService,
     private readonly usersService: UsersService,
   ) {}
 
@@ -68,13 +66,6 @@ export class IssuesService {
       );
     }
 
-    const category = await this.categoriesService.findById(payload.categoryId);
-    if(!category) {
-      ErrorHelper.NotFoundException(
-        this.localesService.translate(CATEGORY_MESSAGE.CATEGORY_NOT_FOUND),
-      );
-    }
-
     if(user?.['role']?.name === EUserRole.USER) {
       const userProject = this.userProjectsService.findOne({
         userId: user.id,
@@ -90,6 +81,8 @@ export class IssuesService {
     const newIssue = await this.prisma.issue.create({
       data: {
         ...payload,
+        startDate: new Date(payload.startDate),
+        dueDate: new Date(payload.dueDate)
       },
     });
 
@@ -107,20 +100,7 @@ export class IssuesService {
     })
     if(!issue) {
       ErrorHelper.NotFoundException(
-        this.localesService.translate(PROJECT_MESSAGE.PROJECT_NOT_FOUND),
-      );
-    }
-    const existedIssue = await this.prisma.issue.findFirst({
-      where: {
-        id: {
-          not: issueId,
-        },
-        // name: payload.name,
-      },
-    });
-    if (existedIssue) {
-      ErrorHelper.BadRequestException(
-        this.localesService.translate(PROJECT_MESSAGE.PROJECT_EXISTED),
+        this.localesService.translate(ISSUE_MESSAGE.ISSUE_NOT_FOUND),
       );
     }
     return this.prisma.issue.update({
@@ -136,10 +116,22 @@ export class IssuesService {
       where: {
         id: issueId,
       },
+      include: {
+        priority: true, 
+        status: true, 
+        tracker: true, 
+        assigner: {
+          select: {
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        }
+      },
     });
     if (!issue) {
       ErrorHelper.NotFoundException(
-        this.localesService.translate(PROJECT_MESSAGE.PROJECT_NOT_FOUND),
+        this.localesService.translate(ISSUE_MESSAGE.ISSUE_NOT_FOUND),
       );
     }
 
@@ -176,21 +168,44 @@ export class IssuesService {
   }
 
   async getIssues(user: User, query: GetIssuesDto): Promise<IPagination<Issue>> {
-    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT } = query;
+    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, projectId, trackerId, priorityId, statusId } = query;
     const offset = (page - 1) * limit;
     const searchQuery = {};
-    if(user?.['role']?.name === EUserRole.USER) {
-      const userProjects = await this.userProjectsService.findMany({
-        userId: user.id,
-      })
-      const projectIds = userProjects.map(item => item.projectId);
-      searchQuery['projectId'] = {
-        in: {
-          in: projectIds
+    if(projectId) {
+      if(user?.['role']?.name === EUserRole.USER) {
+        const userProject = await this.userProjectsService.findOne({
+          userId: user.id,
+          projectId
+        })
+        if(!userProject) {
+          ErrorHelper.BadRequestException(
+            this.localesService.translate(PROJECT_MESSAGE.YOU_NOT_IN_PROJECT),
+          );
+        }
+      }
+      searchQuery['projectId'] = projectId;
+    } else {
+      if(user?.['role']?.name === EUserRole.USER) {
+        const userProjects = await this.userProjectsService.findMany({
+          userId: user.id,
+        })
+        const projectIds = userProjects.map(item => item.projectId);
+        searchQuery['projectId'] = {
+          in: {
+            in: projectIds
+          }
         }
       }
     }
-    console.log(searchQuery)
+    if(trackerId) {
+      searchQuery['trackerId'] = trackerId
+    }
+    if(statusId) {
+      searchQuery['statusId'] = statusId
+    }
+    if(priorityId) {
+      searchQuery['priorityId'] = priorityId
+    }
     const [total, items] = await this.prisma.$transaction([
       this.prisma.issue.count(),
       this.prisma.issue.findMany({
@@ -199,6 +214,23 @@ export class IssuesService {
         where: {
           ...searchQuery,
         },
+        include: {
+          priority: true, 
+          status: true, 
+          tracker: true, 
+          assigner: {
+            select: {
+              email: true,
+              firstName: true,
+              lastName: true,
+            },
+          }
+        },
+        orderBy: [
+          {
+            createdAt: 'desc',
+          },
+        ],
       }),
     ]);
 

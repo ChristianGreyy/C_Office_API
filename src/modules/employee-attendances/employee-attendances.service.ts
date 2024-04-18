@@ -23,6 +23,8 @@ export class EmployeeAttendancesService {
     user: User,
     payload: CreateEmployeeAttendanceDto,
   ): Promise<EmployeeAttendance> {
+    console.log(payload.dateTime)
+
     const startHour = new Date();
     startHour.setUTCHours(0, 0, 0, 0);
 

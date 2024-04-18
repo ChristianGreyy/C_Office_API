@@ -29,6 +29,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersDto } from './dtos/get-users.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { CommonHelper } from 'src/helpers/common.helper';
+import { UpdateProfileDto } from './dtos/update-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -192,22 +193,11 @@ export class UsersService {
 
   async updateUser(
     userId: number,
-    updateUserDto: UpdateUserDto,
+    updateUserDto: UpdateUserDto | UpdateProfileDto,
   ): Promise<User> {
-    const role = await this.prisma.role.findUnique({
-      where: {
-        name: EUserRole.USER,
-      },
-    });
-    if (!role) {
-      ErrorHelper.BadRequestException(
-        this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
-      );
-    }
     const user = await this.prisma.user.findFirst({
       where: {
         id: userId,
-        roleId: role.id,
       },
     });
     if (!user) {
@@ -272,12 +262,18 @@ export class UsersService {
       const hashPassword = await bcrypt.hash(updateUserDto.password, SALT_ROUNDS);
       updateUserDto['password'] = hashPassword;
     }
-    console.log('updateUserDto', updateUserDto)
     return this.prisma.user.update({
       where: {
         id: userId,
       },
       data: updateUserDto,
+      include: {
+        role: true,
+        university: true, 
+        position: true, 
+        level: true, 
+        avatar: true
+      },
     });
   }
 
@@ -310,23 +306,16 @@ export class UsersService {
   }
 
   async getProfile(userId: number): Promise<User> {
-    const role = await this.prisma.role.findUnique({
-      where: {
-        name: EUserRole.USER,
-      },
-    });
-    if (!role) {
-      ErrorHelper.BadRequestException(
-        this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
-      );
-    }
     const user = await this.prisma.user.findFirst({
       where: {
         id: userId,
-        roleId: role.id,
       },
       include: {
         role: true,
+        university: true, 
+        position: true, 
+        level: true, 
+        avatar: true
       },
     });
     if (!user) {

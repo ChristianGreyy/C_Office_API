@@ -23,7 +23,10 @@ export class ProjectsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async createProject(userId: number, payload: CreateProjectDto): Promise<Project> {
+  async createProject(
+    userId: number,
+    payload: CreateProjectDto,
+  ): Promise<Project> {
     const project = await this.prisma.project.findFirst({
       where: {
         name: {
@@ -46,8 +49,8 @@ export class ProjectsService {
     const userProject = await this.userProjectsService.create({
       userId,
       projectId: newProject.id,
-      role: EUserProjectRole.MANAGER
-    })
+      role: EUserProjectRole.MANAGER,
+    });
 
     return newProject;
   }
@@ -58,10 +61,10 @@ export class ProjectsService {
   ): Promise<Project> {
     const project = await this.prisma.project.findFirst({
       where: {
-        id: projectId
-      }
-    })
-    if(!project) {
+        id: projectId,
+      },
+    });
+    if (!project) {
       ErrorHelper.NotFoundException(
         this.localesService.translate(PROJECT_MESSAGE.PROJECT_NOT_FOUND),
       );
@@ -88,24 +91,21 @@ export class ProjectsService {
   }
 
   async getMembersForProject(projectId: number): Promise<any> {
-    const userProjects = await this.userProjectsService.findMany({
+    return this.userProjectsService.findMany({
       where: {
-        projectId
+        projectId,
       },
       select: {
         role: true,
         user: {
           select: {
+            id: true,
             email: true,
             firstName: true,
             lastName: true,
           },
-        }
+        },
       },
-    }) 
-    return userProjects.map(item => {
-      item['user']['role'] = item.role;
-      return item; 
     });
   }
 
@@ -115,48 +115,47 @@ export class ProjectsService {
   ): Promise<Project> {
     const project = await this.prisma.project.findFirst({
       where: {
-        id: projectId
-      }
-    })
-    if(!project) {
+        id: projectId,
+      },
+    });
+    if (!project) {
       ErrorHelper.NotFoundException(
         this.localesService.translate(PROJECT_MESSAGE.PROJECT_NOT_FOUND),
       );
     }
-    const memberIds = payload.members.map(item => item.userId); 
-    const members = payload.members.map(item => {
+    const memberIds = payload.members.map((item) => item.userId);
+    const members = payload.members.map((item) => {
       item['projectId'] = project.id;
       return item;
-    })
-    const users = await
-      this.usersService.findMany({
-        where: {
-          id: {
-            in: memberIds,
-          },
-        }
-      })
-    if(users.length !== memberIds.length) {
+    });
+    const users = await this.usersService.findMany({
+      where: {
+        id: {
+          in: memberIds,
+        },
+      },
+    });
+    if (users.length !== memberIds.length) {
       ErrorHelper.BadRequestException(
         this.localesService.translate(PROJECT_MESSAGE.UPDATE_MEMBERS_FAIL),
       );
     }
     await this.userProjectsService.deleteMany({
       where: {
-        projectId
-      }
-    })
-    await this.userProjectsService.createMany(members)
+        projectId,
+      },
+    });
+    await this.userProjectsService.createMany(members);
     return;
   }
 
   async getProject(user: User, projectId: number): Promise<Project> {
-    if(user?.['role']?.name === EUserRole.USER) {
-      const userProject = this.userProjectsService.findOne({
+    if (user?.['role']?.name === EUserRole.USER) {
+      const userProject = await this.userProjectsService.findOne({
         userId: user.id,
-        projectId
-      })
-      if(!userProject) {
+        projectId,
+      });
+      if (!userProject) {
         ErrorHelper.BadRequestException(
           this.localesService.translate(PROJECT_MESSAGE.YOU_NOT_IN_PROJECT),
         );
@@ -166,7 +165,26 @@ export class ProjectsService {
       where: {
         id: projectId,
       },
+      include: {
+        issues: {
+          include: {
+            tracker: {
+              select: {
+                name: true,
+                slug: true,
+              },
+            },
+            status: {
+              select: {
+                name: true,
+                slug: true,
+              },
+            },
+          },
+        },
+      },
     });
+
     if (!project) {
       ErrorHelper.NotFoundException(
         this.localesService.translate(PROJECT_MESSAGE.PROJECT_NOT_FOUND),
@@ -193,17 +211,40 @@ export class ProjectsService {
     });
   }
 
-  async getProjects(query: GetProjectsDto): Promise<IPagination<Project>> {
-    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT } = query;
+  async getProjects(
+    user: User,
+    query: GetProjectsDto,
+  ): Promise<IPagination<Project>> {
+    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, search } = query;
     const offset = (page - 1) * limit;
-    const searchQuery = {};
+    let condition = {};
+    if (user?.['role']?.name === EUserRole.USER) {
+      const userProjects = await this.userProjectsService.findMany({
+        userId: user.id,
+      });
+      const projectIds = userProjects.map((item) => item.projectId);
+      condition = {
+        id: {
+          in: projectIds,
+        },
+      };
+    }
+    if (search) {
+      condition['name'] = {
+        contains: search,
+        mode: 'insensitive',
+      };
+    }
     const [total, items] = await this.prisma.$transaction([
       this.prisma.project.count(),
       this.prisma.project.findMany({
         take: limit,
         skip: offset,
         where: {
-          ...searchQuery,
+          ...condition,
+        },
+        include: {
+          issues: true,
         },
       }),
     ]);
@@ -219,8 +260,8 @@ export class ProjectsService {
   async findById(id: number): Promise<Project> {
     return this.prisma.project.findFirst({
       where: {
-        id
-      }
+        id,
+      },
     });
   }
 

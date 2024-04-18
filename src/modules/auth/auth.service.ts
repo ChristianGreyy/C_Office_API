@@ -58,7 +58,10 @@ export class AuthService {
     const accessToken = await this.jwtService.signAsync(payload);
     const refreshToken = await this.jwtService.signAsync(payload);
 
+    delete user['password'];
+
     return {
+      user,
       accessToken,
       refreshToken,
     };
@@ -68,7 +71,7 @@ export class AuthService {
     const user = await this.usersService.findOne({
       where: {
         email,
-      }
+      },
     });
     if (!user) {
       ErrorHelper.BadRequestException(

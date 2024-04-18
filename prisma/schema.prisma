@@ -37,29 +37,32 @@ enum EUserProjectRole {
 }
 
 model User {
-  id           Int           @id @default(autoincrement())
-  email        String        @unique @db.VarChar(50)
-  phone        String?       @unique @db.VarChar(50)
-  password     String        @db.VarChar(100)
-  gender       EUserGender?
-  firstName    String?       @map("first_name") @db.VarChar(50)
-  lastName     String?       @map("last_name") @db.VarChar(50)
-  status       EUserStatus?
-  checkInDate  DateTime?     @default(now()) @map("check_in_date")
-  checkOutDate DateTime?     @map("check_out_date")
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  role         Role?         @relation(fields: [roleId], references: [id])
-  roleId       Int?
-  Position     Position?     @relation(fields: [positionId], references: [id])
-  positionId   Int?
-  Level        Level?        @relation(fields: [levelId], references: [id])
-  levelId      Int?
-  University   University?   @relation(fields: [universityId], references: [id])
-  universityId Int?
-  issues       Issue[]
-  userProjects  UserProject[]
-  employeeAttendances  EmployeeAttendance[]
+  id                  Int                  @id @default(autoincrement())
+  email               String               @unique @db.VarChar(50)
+  phone               String?              @unique @db.VarChar(50)
+  password            String               @db.VarChar(100)
+  gender              EUserGender?
+  firstName           String?              @map("first_name") @db.VarChar(50)
+  lastName            String?              @map("last_name") @db.VarChar(50)
+  status              EUserStatus?
+  checkInDate         DateTime?            @default(now()) @map("check_in_date")
+  checkOutDate        DateTime?            @map("check_out_date")
+  createdAt           DateTime             @default(now()) @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  role                Role?                @relation(fields: [roleId], references: [id])
+  roleId              Int?
+  position            Position?            @relation(fields: [positionId], references: [id])
+  positionId          Int?
+  level               Level?               @relation(fields: [levelId], references: [id])
+  levelId             Int?
+  university          University?          @relation(fields: [universityId], references: [id])
+  universityId        Int?
+  issues              Issue[]
+  userProjects        UserProject[]
+  employeeAttendances EmployeeAttendance[]
+  media               Media[]              @relation("creator_media")
+  avatar              Media?               @relation("user_avatar", fields: [avatarId], references: [id])
+  avatarId            Int?                 @unique
 }
 
 model Role {
@@ -110,6 +113,7 @@ model University {
 model Tracker {
   id        Int      @id @default(autoincrement())
   name      String?  @db.VarChar(30)
+  slug      String?  @db.VarChar(30)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   issues    Issue[]
@@ -118,6 +122,7 @@ model Tracker {
 model Priority {
   id        Int      @id @default(autoincrement())
   name      String?  @db.VarChar(30)
+  slug      String?  @db.VarChar(30)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   issues    Issue[]
@@ -126,14 +131,8 @@ model Priority {
 model Status {
   id        Int      @id @default(autoincrement())
   name      String?  @db.VarChar(30)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  issues    Issue[]
-}
-
-model Category {
-  id        Int      @id @default(autoincrement())
-  name      String?  @db.VarChar(30)
+  slug      String?  @db.VarChar(30)
+  color      String?  @db.VarChar(30)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   issues    Issue[]
@@ -153,6 +152,8 @@ model Project {
   name        String?       @db.VarChar(100)
   sprints     Sprint[]
   issues      Issue[]
+  kickOffDate        DateTime? @map("kick_off_date") @db.Date
+  deadline        DateTime? @map("deadline") @db.Date
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
   UserProject UserProject[]
@@ -173,14 +174,15 @@ model Issue {
   id               Int       @id @default(autoincrement())
   subject          String?   @db.VarChar(30)
   input            String?   @db.Text
-  completedPercent Int?      @map("completed_percent") @db.Integer
+  completedPercent Int?      @map("completed_percent") @db.Integer @default(0)
   startDate        DateTime? @map("start_date") @db.Date
   dueDate          DateTime? @map("due_date") @db.Date
   estimateTime     Int?      @map("estimate_time") @db.Integer
+  spentTime        Float?    @map("spent_time")
   output           String?   @db.Text
   createdAt        DateTime  @default(now()) @map("created_at")
   updatedAt        DateTime  @updatedAt @map("updated_at")
-  assign           User?     @relation(fields: [assignId], references: [id])
+  assigner         User?     @relation(fields: [assignId], references: [id])
   assignId         Int?
   priority         Priority? @relation(fields: [priorityId], references: [id])
   priorityId       Int?
@@ -188,18 +190,26 @@ model Issue {
   trackerId        Int?
   status           Status?   @relation(fields: [statusId], references: [id])
   statusId         Int?
-  category         Category? @relation(fields: [categoryId], references: [id])
-  categoryId       Int?
   project          Project?  @relation(fields: [projectId], references: [id])
   projectId        Int?
 }
 
 model EmployeeAttendance {
-  id        Int               @id @default(autoincrement())
-  user      User?             @relation(fields: [userId], references: [id])
-  userId    Int?
-  checkInTime DateTime?
+  id           Int       @id @default(autoincrement())
+  user         User?     @relation(fields: [userId], references: [id])
+  userId       Int?
+  checkInTime  DateTime?
   checkOutTime DateTime?
-  createdAt DateTime          @default(now()) @map("created_at")
-  updatedAt DateTime          @updatedAt @map("updated_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+}
+
+model Media {
+  id        Int      @id @default(autoincrement())
+  url       String?  @db.Text
+  creator   User?    @relation("creator_media", fields: [creatorId], references: [id])
+  creatorId Int?
+  user      User?    @relation("user_avatar")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 }

@@ -41,8 +41,9 @@ export class ProjectsController {
   @Post()
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN, EUserRole.STAFF, EUserRole.MANAGER])
-  async createProject(@Body() createProjectDto: CreateProjectDto,
-    @UserDecorator('id') userId: number 
+  async createProject(
+    @Body() createProjectDto: CreateProjectDto,
+    @UserDecorator('id') userId: number,
   ): Promise<{
     message: string;
     data: Project;
@@ -81,16 +82,9 @@ export class ProjectsController {
   @AuthDecorator([EUserRole.ADMIN, EUserRole.STAFF, EUserRole.MANAGER])
   async getMembersForProject(
     @Param('projectId') projectId: number,
-  ): Promise<{
-    users: Project;
-  }> {
-    return {
-      users: await this.projectsService.getMembersForProject(
-        projectId,
-      ),
-    };
+  ): Promise<any> {
+    return this.projectsService.getMembersForProject(projectId);
   }
-
 
   @Put('members/:projectId')
   @UseGuards(AuthGuard)
@@ -118,7 +112,7 @@ export class ProjectsController {
   @AuthDecorator([EUserRole.ADMIN])
   async getProject(
     @Param('projectId') projectId: number,
-    @UserDecorator() user: User
+    @UserDecorator() user: User,
   ): Promise<Project> {
     return this.projectsService.getProject(user, projectId);
   }
@@ -142,8 +136,9 @@ export class ProjectsController {
   @UseGuards(AuthGuard)
   @AuthDecorator([EUserRole.ADMIN, EUserRole.STAFF, EUserRole.MANAGER])
   async getProjects(
+    @UserDecorator() user: User,
     @Query() getProjectsDto: GetProjectsDto,
   ): Promise<IPagination<Project>> {
-    return this.projectsService.getProjects(getProjectsDto);
+    return this.projectsService.getProjects(user, getProjectsDto);
   }
 }

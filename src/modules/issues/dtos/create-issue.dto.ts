@@ -63,17 +63,16 @@ export class CreateIssueDto {
   })
   estimateTime: number;
 
-  @IsString({ message: i18nValidationMessage(COMMON_MESSAGE.INVALID) })
-  @Transform(({ value }) => value.trim())
+  @IsNumber()
   @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
   @IsOptional()
   @ApiProperty({
-    name: 'output',
-    type: String,
+    name: 'completedPercent',
+    type: Number,
     required: true,
-    example: 'done!'
+    example: 2.5
   })
-  output: string;
+  completedPercent: number;
 
   @IsNumber()
   @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
@@ -119,16 +118,16 @@ export class CreateIssueDto {
   })
   statusId: number;
 
-  @IsNumber()
-  @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
-  @IsOptional()
-  @ApiProperty({
-    name: 'categoryId',
-    type: Number,
-    required: true,
-    example: 3
-  })
-  categoryId: number;
+  // @IsNumber()
+  // @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
+  // @IsOptional()
+  // @ApiProperty({
+  //   name: 'categoryId',
+  //   type: Number,
+  //   required: true,
+  //   example: 3
+  // })
+  // categoryId: number;
 
   @IsNumber()
   @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })

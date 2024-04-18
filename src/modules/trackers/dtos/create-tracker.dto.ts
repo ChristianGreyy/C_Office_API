@@ -14,4 +14,14 @@ export class CreateTrackerDto {
     required: true,
   })
   name: string;
+
+  @IsString({ message: i18nValidationMessage(COMMON_MESSAGE.INVALID) })
+  @Transform(({ value }) => value.toLowerCase())
+  @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
+  @ApiProperty({
+    name: 'slug',
+    type: String,
+    required: true,
+  })
+  slug: string;
 }

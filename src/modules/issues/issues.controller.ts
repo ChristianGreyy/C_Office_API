@@ -9,20 +9,19 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiHeader, ApiOperation, ApiProperty, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiHeader, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Issue, User } from '@prisma/client';
-import { AuthDecorator } from '../../common/decorators/auth.decorator';
-import { PermissionDecorator } from '../../common/decorators/permission.decorator';
-import { EUserPermission, EUserRole } from '../../common/enums';
-import { AuthGuard } from '../../common/guards/auth.guard';
+import { UserDecorator } from 'src/common/decorators/user.decorator';
 import { IPagination } from 'src/interfaces/response.interface';
 import { ISSUE_MESSAGE } from 'src/messages';
+import { AuthDecorator } from '../../common/decorators/auth.decorator';
+import { EUserRole } from '../../common/enums';
+import { AuthGuard } from '../../common/guards/auth.guard';
 import { LocalesService } from '../locales/locales.service';
 import { CreateIssueDto } from './dtos/create-issue.dto';
 import { GetIssuesDto } from './dtos/get-issues.dto';
 import { UpdateIssueDto } from './dtos/update-issue.dto';
 import { IssuesService } from './issues.service';
-import { UserDecorator } from 'src/common/decorators/user.decorator';
 
 @ApiHeader({
   name: 'X-MyHeader',

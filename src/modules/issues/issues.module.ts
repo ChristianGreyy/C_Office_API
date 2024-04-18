@@ -1,5 +1,4 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { CategoriesModule } from '../categories/categories.module';
 import { LocalesModule } from '../locales/locales.module';
 import { PermissionsModule } from '../permissions/permissions.module';
 import { PrioritiesModule } from '../priorities/priorities.module';
@@ -23,7 +22,6 @@ import { IssuesService } from './issues.service';
     forwardRef(() => PrioritiesModule),
     forwardRef(() => TrackersModule),
     forwardRef(() => StatusModule),
-    forwardRef(() => CategoriesModule),
   ],
   controllers: [IssuesController],
   providers: [IssuesService],
