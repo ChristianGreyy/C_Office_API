@@ -72,6 +72,23 @@ export class UsersController {
     return this.usersService.getProfile(userId);
   }
 
+  @Put('profile')
+  @UseGuards(AuthGuard)
+  @AuthDecorator([EUserRole.ADMIN])
+  @PermissionDecorator(EUserPermission.UPDATE_USER)
+  async updateProfile(
+    @UserDecorator('id') userId: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<{
+    message: string;
+    data: User;
+  }> {
+    return {
+      message: this.localesService.translate(USER_MESSAGE.UPDATE_USER_SUCCESS),
+      data: await this.usersService.updateUser(userId, updateUserDto),
+    };
+  }
+
 
   @Get('staffs/:userId')
   @UseGuards(AuthGuard)

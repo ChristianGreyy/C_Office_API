@@ -16,7 +16,9 @@ import { SprintsModule } from './sprints/sprints.module';
 import { StatusModule } from './status/status.module';
 import { TrackersModule } from './trackers/trackers.module';
 import { UniversitiesModule } from './universities/universities.module';
+import { UploadsModule } from './uploads/upload.module';
 import { UsersModule } from './users/users.module';
+import { MediaModule } from './media/media.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { UsersModule } from './users/users.module';
     SprintsModule,
     IssuesModule,
     EmployeeAttendanceModule,
+    UploadsModule,
+    MediaModule
   ],
 })
 export class AppModule {}
