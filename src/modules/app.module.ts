@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
+import { DevicesModule } from './devices/devices.module';
 import { EmployeeAttendanceModule } from './employee-attendances/employee-attendances.module';
 import { IssuesModule } from './issues/issues.module';
 import { LevelsModule } from './levels/levels.module';
 import { LocalesModule } from './locales/locales.module';
 import { MediaModule } from './media/media.module';
 import { NodemailerModule } from './nodemailer/nodemailer.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { PositionsModule } from './positions/positions.module';
 import { PrioritiesModule } from './priorities/priorities.module';
@@ -39,7 +41,9 @@ import { UsersModule } from './users/users.module';
     IssuesModule,
     EmployeeAttendanceModule,
     UploadsModule,
-    MediaModule
+    MediaModule,
+    DevicesModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}
