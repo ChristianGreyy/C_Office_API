@@ -1,6 +1,114 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 async function main() {
+  await prisma.role.createMany({
+    data: [
+      {
+        name: 'admin',
+        permissionIds: []
+      },
+      {
+        name: 'qc',
+        permissionIds: []
+      },
+      {
+        name: 'developer',
+        permissionIds: []
+      },
+      {
+        name: 'tester',
+        permissionIds: []
+      },
+      {
+        name: 'leader',
+        permissionIds: []
+      },
+      {
+        name: 'sale',
+        permissionIds: []
+      },
+    ]
+  });
+
+  await prisma.status.createMany({
+    data: [
+      {
+        name: 'New',
+        slug: 'new'
+      },
+      {
+        name: 'Re open',
+        slug: 're_open'
+      },
+      {
+        name: 'In progress',
+        slug: 'in_progress'
+      },
+      {
+        name: 'Resolved',
+        slug: 'resolved'
+      },
+      {
+        name: 'Pending',
+        slug: 'pending'
+      },
+      {
+        name: 'Feedback',
+        slug: 'feedback'
+      },
+      {
+        name: 'Closed',
+        slug: 'closed'
+      },
+    ]
+  });
+
+  await prisma.tracker.createMany({
+    data: [
+      {
+        name: 'Feature',
+        slug: 'feature'
+      },
+      {
+        name: 'Bug',
+        slug: 'bug'
+      },
+      {
+        name: 'Test case',
+        slug: 'test_case'
+      },
+      {
+        name: 'Support',
+        slug: 'support'
+      },
+      {
+        name: 'Meeting',
+        slug: 'meeting'
+      },
+    ]
+  });
+
+  await prisma.priority.createMany({
+    data: [
+      {
+        name: 'Normal',
+        slug: 'norma.'
+      },
+      {
+        name: 'Low',
+        slug: 'low'
+      },
+      {
+        name: 'High',
+        slug: 'high'
+      },
+      {
+        name: 'Urgent',
+        slug: 'urgent'
+      },
+    ]
+  });
+
   await prisma.permission.createMany({
     data: [
       // users

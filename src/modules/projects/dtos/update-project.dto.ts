@@ -8,10 +8,22 @@ export class UpdateProjectDto {
   @IsString({ message: i18nValidationMessage(COMMON_MESSAGE.INVALID) })
   @Transform(({ value }) => value.trim())
   @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
+  @IsOptional()
   @ApiProperty({
     name: 'name',
     type: String,
-    required: true,
+    required: false,
   })
   name: string;
+
+  @IsString({ message: i18nValidationMessage(COMMON_MESSAGE.INVALID) })
+  @Transform(({ value }) => value.trim())
+  @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
+  @IsOptional()
+  @ApiProperty({
+    name: 'wiki',
+    type: String,
+    required: false,
+  })
+  wiki: string;
 }

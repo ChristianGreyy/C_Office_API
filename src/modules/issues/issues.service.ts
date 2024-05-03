@@ -4,7 +4,15 @@ import { EUserRole } from 'src/common/enums';
 import { LIMIT_DEFAULT, PAGE_DEFAULT } from 'src/constants';
 import { ErrorHelper } from 'src/helpers';
 import { IPagination } from 'src/interfaces/response.interface';
-import { CATEGORY_MESSAGE, ISSUE_MESSAGE, PRIORITY_MESSAGE, PROJECT_MESSAGE, STATUS_MESSAGE, TRACKER_MESSAGE, USER_MESSAGE } from 'src/messages';
+import {
+  CATEGORY_MESSAGE,
+  ISSUE_MESSAGE,
+  PRIORITY_MESSAGE,
+  PROJECT_MESSAGE,
+  STATUS_MESSAGE,
+  TRACKER_MESSAGE,
+  USER_MESSAGE,
+} from 'src/messages';
 import { LocalesService } from '../locales/locales.service';
 import { PrioritiesService } from '../priorities/priorities.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -31,47 +39,49 @@ export class IssuesService {
   ) {}
 
   async createIssue(user: User, payload: CreateIssueDto): Promise<Issue> {
-    const project= await this.projectsService.findById(payload.projectId);
-    if(!project) {
+    const project = await this.projectsService.findById(payload.projectId);
+    if (!project) {
       ErrorHelper.NotFoundException(
         this.localesService.translate(PROJECT_MESSAGE.PROJECT_NOT_FOUND),
       );
     }
 
     const assigner = await this.usersService.findById(payload.assignId);
-    if(!assigner) {
+    if (!assigner) {
       ErrorHelper.NotFoundException(
         this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
       );
     }
 
     const priority = await this.prioritiesService.findById(payload.priorityId);
-    if(!priority) {
+    if (!priority) {
       ErrorHelper.NotFoundException(
         this.localesService.translate(PRIORITY_MESSAGE.PRIORITY_NOT_FOUND),
       );
     }
 
     const tracker = await this.trackersService.findById(payload.trackerId);
-    if(!tracker) {
+    if (!tracker) {
       ErrorHelper.NotFoundException(
         this.localesService.translate(TRACKER_MESSAGE.TRACKER_NOT_FOUND),
       );
     }
 
     const status = await this.statusService.findById(payload.statusId);
-    if(!status) {
+    if (!status) {
       ErrorHelper.NotFoundException(
         this.localesService.translate(STATUS_MESSAGE.STATUS_NOT_FOUND),
       );
     }
 
-    if(user?.['role']?.name === EUserRole.USER) {
+    if (user?.['role']?.name === EUserRole.USER) {
       const userProject = this.userProjectsService.findOne({
-        userId: user.id,
-        projectId: payload.projectId
-      })
-      if(!userProject) {
+        where: {
+          userId: user.id,
+          projectId: payload.projectId,
+        }
+      });
+      if (!userProject) {
         ErrorHelper.BadRequestException(
           this.localesService.translate(PROJECT_MESSAGE.YOU_NOT_IN_PROJECT),
         );
@@ -82,32 +92,40 @@ export class IssuesService {
       data: {
         ...payload,
         startDate: new Date(payload.startDate),
-        dueDate: new Date(payload.dueDate)
+        dueDate: new Date(payload.dueDate),
+        creatorId: user.id
       },
     });
 
     return newIssue;
   }
 
-  async updateIssue(
-    issueId: number,
-    payload: UpdateIssueDto,
-  ): Promise<Issue> {
+  async updateIssue(issueId: number, user: User, payload: UpdateIssueDto): Promise<Issue> {
+    const {output, ...passData} = payload;
     const issue = await this.prisma.issue.findFirst({
       where: {
-        id: issueId
-      }
-    })
-    if(!issue) {
+        id: issueId,
+      },
+    });
+    if (!issue) {
       ErrorHelper.NotFoundException(
         this.localesService.translate(ISSUE_MESSAGE.ISSUE_NOT_FOUND),
       );
+    }
+    if(output) {
+      await this.prisma.issueOutput.create({
+        data: {
+          userId: user.id,
+          comment: output,
+          issueId: issue.id
+        }
+      })
     }
     return this.prisma.issue.update({
       where: {
         id: issueId,
       },
-      data: payload,
+      data: passData,
     });
   }
 
@@ -117,16 +135,44 @@ export class IssuesService {
         id: issueId,
       },
       include: {
-        priority: true, 
-        status: true, 
-        tracker: true, 
+        priority: true,
+        status: true,
+        tracker: true,
         assigner: {
           select: {
             email: true,
             firstName: true,
             lastName: true,
+            avatar: true,
           },
-        }
+        },
+        creator: {
+          select: {
+            email: true,
+            firstName: true,
+            lastName: true,
+            avatar: true,
+          },
+        },
+        output: {
+          select: {
+            user: {
+              select: {
+                email: true,
+                firstName: true,
+                lastName: true,
+                avatar: true,
+              }
+            },                          
+            comment: true,
+            createdAt: true
+          },
+          orderBy: [
+            {
+              createdAt: 'desc',
+            },
+          ],
+        },
       },
     });
     if (!issue) {
@@ -135,12 +181,12 @@ export class IssuesService {
       );
     }
 
-    if(user?.['role']?.name === EUserRole.USER) {
+    if (user?.['role']?.name === EUserRole.USER) {
       const userProject = this.userProjectsService.findOne({
         userId: user.id,
-        projectId: issue.projectId
-      })
-      if(!userProject) {
+        projectId: issue.projectId,
+      });
+      if (!userProject) {
         ErrorHelper.BadRequestException(
           this.localesService.translate(PROJECT_MESSAGE.YOU_NOT_IN_PROJECT),
         );
@@ -167,44 +213,55 @@ export class IssuesService {
     });
   }
 
-  async getIssues(user: User, query: GetIssuesDto): Promise<IPagination<Issue>> {
-    const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, projectId, trackerId, priorityId, statusId } = query;
+  async getIssues(
+    user: User,
+    query: GetIssuesDto,
+  ): Promise<IPagination<Issue>> {
+    const {
+      limit = LIMIT_DEFAULT,
+      page = PAGE_DEFAULT,
+      projectId,
+      trackerId,
+      priorityId,
+      statusId,
+    } = query;
     const offset = (page - 1) * limit;
     const searchQuery = {};
-    if(projectId) {
-      if(user?.['role']?.name === EUserRole.USER) {
-        const userProject = await this.userProjectsService.findOne({
-          userId: user.id,
-          projectId
-        })
-        if(!userProject) {
-          ErrorHelper.BadRequestException(
-            this.localesService.translate(PROJECT_MESSAGE.YOU_NOT_IN_PROJECT),
-          );
-        }
-      }
-      searchQuery['projectId'] = projectId;
-    } else {
-      if(user?.['role']?.name === EUserRole.USER) {
-        const userProjects = await this.userProjectsService.findMany({
-          userId: user.id,
-        })
-        const projectIds = userProjects.map(item => item.projectId);
-        searchQuery['projectId'] = {
-          in: {
-            in: projectIds
-          }
-        }
-      }
+    if(projectId) searchQuery['projectId'] = projectId;
+    // if (projectId) {
+    //   if (user?.['role']?.name === EUserRole.USER) {
+    //     const userProject = await this.userProjectsService.findOne({
+    //       userId: user.id,
+    //       projectId,
+    //     });
+    //     if (!userProject) {
+    //       ErrorHelper.BadRequestException(
+    //         this.localesService.translate(PROJECT_MESSAGE.YOU_NOT_IN_PROJECT),
+    //       );
+    //     }
+    //   }
+    //   searchQuery['projectId'] = projectId;
+    // } else {
+    //   if (user?.['role']?.name === EUserRole.USER) {
+    //     const userProjects = await this.userProjectsService.findMany({
+    //       userId: user.id,
+    //     });
+    //     const projectIds = userProjects.map((item) => item.projectId);
+    //     searchQuery['projectId'] = {
+    //       in: {
+    //         in: projectIds,
+    //       },
+    //     };
+    //   }
+    // }
+    if (trackerId) {
+      searchQuery['trackerId'] = trackerId;
     }
-    if(trackerId) {
-      searchQuery['trackerId'] = trackerId
+    if (statusId) {
+      searchQuery['statusId'] = statusId;
     }
-    if(statusId) {
-      searchQuery['statusId'] = statusId
-    }
-    if(priorityId) {
-      searchQuery['priorityId'] = priorityId
+    if (priorityId) {
+      searchQuery['priorityId'] = priorityId;
     }
     const [total, items] = await this.prisma.$transaction([
       this.prisma.issue.count(),
@@ -215,16 +272,16 @@ export class IssuesService {
           ...searchQuery,
         },
         include: {
-          priority: true, 
-          status: true, 
-          tracker: true, 
+          priority: true,
+          status: true,
+          tracker: true,
           assigner: {
             select: {
               email: true,
               firstName: true,
               lastName: true,
             },
-          }
+          },
         },
         orderBy: [
           {

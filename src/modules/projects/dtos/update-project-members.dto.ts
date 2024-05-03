@@ -6,7 +6,7 @@ import { UpdateProjectMembersTypeDto } from './update-project-members-type.dto';
 export class UpdateProjectMembersDto {
   @IsArray()
   @ValidateNested({ each: true })
-  @ArrayMinSize(1)
+  // @ArrayMinSize(1)
   @ArrayMaxSize(10)
   @Type(() => UpdateProjectMembersTypeDto)
   @ApiProperty({

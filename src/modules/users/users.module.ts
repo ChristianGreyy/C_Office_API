@@ -8,6 +8,7 @@ import { PrismaModule } from '../prisma/prisma.module';
 import { UniversitiesModule } from '../universities/universities.module';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
+import { IssuesModule } from '../issues/issues.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { UsersService } from './users.service';
     forwardRef(() => PositionsModule),
     forwardRef(() => UniversitiesModule),
     forwardRef(() => LevelsModule),
+    forwardRef(() => IssuesModule),
   ],
   controllers: [UsersController],
   providers: [UsersService],

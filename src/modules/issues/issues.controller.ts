@@ -61,6 +61,7 @@ export class IssuesController {
   async updateIssue(
     @Param('issueId') issueId: number,
     @Body() updateIssueDto: UpdateIssueDto,
+    @UserDecorator() user: User 
   ): Promise<{
     message: string;
     data: Issue;
@@ -71,6 +72,7 @@ export class IssuesController {
       ),
       data: await this.issuesService.updateIssue(
         issueId,
+        user,
         updateIssueDto,
       ),
     };

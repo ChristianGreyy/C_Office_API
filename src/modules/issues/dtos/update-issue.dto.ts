@@ -8,6 +8,7 @@ export class UpdateIssueDto {
   @IsString({ message: i18nValidationMessage(COMMON_MESSAGE.INVALID) })
   @Transform(({ value }) => value.trim())
   @IsNotEmpty({ message: i18nValidationMessage(COMMON_MESSAGE.NOT_EMPTY) })
+  @IsOptional()
   @ApiProperty({
     name: 'subject',
     type: String,

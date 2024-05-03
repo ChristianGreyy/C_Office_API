@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import * as bcrypt from 'bcryptjs';
-import { EUserRole } from '../../common/enums';
+import { ETrackerSLug, EUserRole } from '../../common/enums';
 import {
   LIMIT_DEFAULT,
   MAIL_SUBJECT,
@@ -262,6 +262,7 @@ export class UsersService {
       const hashPassword = await bcrypt.hash(updateUserDto.password, SALT_ROUNDS);
       updateUserDto['password'] = hashPassword;
     }
+
     return this.prisma.user.update({
       where: {
         id: userId,
@@ -295,8 +296,51 @@ export class UsersService {
       },
       include: {
         role: true,
+        issues: {
+          where: {
+            assignId: userId,
+          },
+          include: {
+            tracker: {
+              where: {
+                slug: {
+                  in: [ETrackerSLug.feature, ETrackerSLug.bug]
+                }
+              },
+              select: {
+                id: true,
+                name: true,
+                slug: true
+              }
+            },
+            project: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        }
       },
     });
+    const statistics = {};
+    for(const issue of user.issues) {
+      if(issue.projectId && issue.trackerId) {
+        if(!statistics[issue.project.name]) {
+          statistics[issue.project.name] = {
+            bug: 0,
+            feature: 0
+          }
+        } else {
+          if(issue.tracker.slug === ETrackerSLug.bug) {
+            statistics[issue.project.name]['bug'] ++;
+          } else {
+            statistics[issue.project.name]['feature'] ++;
+          }
+        }
+      }
+    }
+    user['statistics'] = statistics;
     if (!user) {
       ErrorHelper.NotFoundException(
         this.localesService.translate(USER_MESSAGE.USER_NOT_FOUND),
@@ -355,12 +399,12 @@ export class UsersService {
     });
   }
 
-  async getUsers(query: GetUsersDto): Promise<IPagination<User>> {
+  async getUsers(query: GetUsersDto): Promise<IPagination<any>> {
     const { limit = LIMIT_DEFAULT, page = PAGE_DEFAULT, search, sort } = query;
     const offset = (page - 1) * limit;
     const role = await this.prisma.role.findUnique({
       where: {
-        name: EUserRole.USER,
+        name: EUserRole.ADMIN,
       },
     });
     if (!role) {
@@ -369,7 +413,9 @@ export class UsersService {
       );
     }
     const searchQuery = {
-      roleId: role.id,
+      roleId: {
+        not: role.id
+      },
     };
     if (search) {
       searchQuery['OR'] = [
@@ -402,10 +448,20 @@ export class UsersService {
         where: {
           ...searchQuery,
         },
-        include: {
+        // include: {
+        //   role: true,
+        //   // avatar: true,
+        // },
+        orderBy,
+        select: {
+          id: true,
+          email: true,
+          firstName: true,
+          lastName: true,
           role: true,
+          avatar: true,
+          createdAt: true
         },
-        orderBy
       }),
     ]);
 

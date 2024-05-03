@@ -43,14 +43,16 @@ export class ProjectsService {
     const newProject = await this.prisma.project.create({
       data: {
         ...payload,
+        kickOffDate: new Date(payload.kickOffDate),
+        deadline: new Date(payload.deadline)
       },
     });
 
-    const userProject = await this.userProjectsService.create({
-      userId,
-      projectId: newProject.id,
-      role: EUserProjectRole.MANAGER,
-    });
+    // const userProject = await this.userProjectsService.create({
+    //   userId,
+    //   projectId: newProject.id,
+    //   role: EUserProjectRole.MANAGER,
+    // });
 
     return newProject;
   }
@@ -69,18 +71,20 @@ export class ProjectsService {
         this.localesService.translate(PROJECT_MESSAGE.PROJECT_NOT_FOUND),
       );
     }
-    const existedProject = await this.prisma.project.findFirst({
-      where: {
-        id: {
-          not: projectId,
+    if(payload.name) {
+      const existedProject = await this.prisma.project.findFirst({
+        where: {
+          id: {
+            not: projectId,
+          },
+          name: payload.name,
         },
-        name: payload.name,
-      },
-    });
-    if (existedProject) {
-      ErrorHelper.BadRequestException(
-        this.localesService.translate(PROJECT_MESSAGE.PROJECT_EXISTED),
-      );
+      });
+      if (existedProject) {
+        ErrorHelper.BadRequestException(
+          this.localesService.translate(PROJECT_MESSAGE.PROJECT_EXISTED),
+        );
+      }
     }
     return this.prisma.project.update({
       where: {
@@ -105,6 +109,7 @@ export class ProjectsService {
             lastName: true,
           },
         },
+        createdAt: true
       },
     });
   }
@@ -152,8 +157,10 @@ export class ProjectsService {
   async getProject(user: User, projectId: number): Promise<Project> {
     if (user?.['role']?.name === EUserRole.USER) {
       const userProject = await this.userProjectsService.findOne({
-        userId: user.id,
-        projectId,
+        where: {
+          userId: user.id,
+          projectId,
+        }
       });
       if (!userProject) {
         ErrorHelper.BadRequestException(
@@ -220,7 +227,9 @@ export class ProjectsService {
     let condition = {};
     if (user?.['role']?.name === EUserRole.USER) {
       const userProjects = await this.userProjectsService.findMany({
-        userId: user.id,
+        where: {
+          userId: user.id,
+        }
       });
       const projectIds = userProjects.map((item) => item.projectId);
       condition = {
@@ -244,7 +253,11 @@ export class ProjectsService {
           ...condition,
         },
         include: {
-          issues: true,
+          issues: {
+            include: {
+              status: true
+            }
+          }
         },
       }),
     ]);

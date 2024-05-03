@@ -57,7 +57,10 @@ export class AuthGuard implements CanActivate {
         role: true,
       },
     });
-    if (!user || !roles.includes(user?.['role']?.name)) {
+    // if (!user || !roles.includes(user?.['role']?.name)) {
+    //   throw new UnauthorizedException();
+    // }
+    if (!user || !user.roleId) {
       throw new UnauthorizedException();
     }
     // role admin

@@ -41,6 +41,9 @@ export class AuthService {
       where: {
         email,
       },
+      include: {
+        avatar: true,
+      },
     });
     if (!user) {
       ErrorHelper.BadRequestException(
